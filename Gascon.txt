@@ -87,7 +87,7 @@ h1 {
 /* Makes the delete and edit buttons in the modal a consistent width */
 #modalDeleteBtn, #modalEditBtn {
   min-width: 90px;        /* Minimum width for buttons */
-}
+} 
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -354,7 +354,6 @@ function capitalizeFirstLetter(text) {
             placeholder="Enter number of users (1–1000)"
             min="1"
             max="1000"
-            value="0"
           />
           <button class="btn btn-primary" id="generateBtn">Generate</button>
         </div>
