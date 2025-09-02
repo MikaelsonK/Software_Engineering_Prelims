@@ -1,0 +1,252 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .rounded-pill {
+      border-radius: 50rem !important;
+    }
+    .header-row th {
+      text-align: center;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <!-- input and button -->
+    <div class="row mb-4 justify-content-center">
+      <div class="col-md-4 mb-2">
+        <input type="number" id="userCount" class="form-control rounded-pill text-center" placeholder="Enter number of users (0-1000)">
+      </div>
+      <div class="col-md-2 mb-2">
+        <button id="generateBtn" class="btn btn-primary w-100 rounded-pill">Generate</button>
+      </div>
+    </div>
+
+    <!-- table -->
+    <div class="table-responsive">
+      <table class="table align-middle text-center">
+        <thead>
+          <tr class="header-row">
+            <th>
+              <select id="nameType" class="form-select rounded-pill text-center">
+                <option value="first">First Name</option>
+                <option value="last">Last Name</option>
+              </select>
+            </th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Gender</span></th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Email Address</span></th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Country</span></th>
+          </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="modalImg" class="rounded-circle mb-3" width="100" height="100" alt="User">
+
+          <!-- Editable form fields -->
+          <input id="modalName" class="form-control mb-2 text-center" readonly>
+          <textarea id="modalAddress" class="form-control mb-2 text-center" rows="2" readonly></textarea>
+          <input id="modalEmail" class="form-control mb-2 text-center" readonly>
+          <input id="modalPhone" class="form-control mb-2 text-center" readonly>
+          <input id="modalCell" class="form-control mb-2 text-center" readonly>
+          <input id="modalDob" class="form-control mb-2 text-center" readonly>
+          <input id="modalGender" class="form-control mb-2 text-center" readonly>
+        </div>
+
+        <div class="modal-footer justify-content-between px-4">
+          <div>
+            <button id="editBtn" class="btn btn-outline-warning me-2">
+              ✏️ Edit
+            </button>
+            <button id="saveBtn" class="btn btn-success d-none me-2">
+              ✅ Save
+            </button>
+            <button id="deleteBtn" class="btn btn-outline-danger">
+              🗑️  Delete
+            </button>
+          </div>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+script.js 
+const generateBtn = document.getElementById("generateBtn");
+const userCountInput = document.getElementById("userCount");
+const userTable = document.getElementById("userTable");
+const nameTypeSelect = document.getElementById("nameType");
+
+// for modal references
+const modal = new bootstrap.Modal(document.getElementById("userModal"));
+const modalImg = document.getElementById("modalImg");
+const modalName = document.getElementById("modalName");
+const modalAddress = document.getElementById("modalAddress");
+const modalEmail = document.getElementById("modalEmail");
+const modalPhone = document.getElementById("modalPhone");
+const modalCell = document.getElementById("modalCell");
+const modalDob = document.getElementById("modalDob");
+const modalGender = document.getElementById("modalGender");
+
+const deleteBtn = document.getElementById("deleteBtn");
+const editBtn = document.getElementById("editBtn");
+const saveBtn = document.getElementById("saveBtn");
+
+let currentUsers = [];
+let selectedUserIndex = null;
+
+// fetch users
+function fetchUsers(count) {
+  return fetch("https://randomuser.me/api/?results=" + count)
+    .then(response => {
+      if (!response.ok) throw new Error("API request failed with status " + response.status);
+      return response.json();
+    })
+    .then(data => data.results);
+}
+
+// display users
+function displayUsers(users) {
+  userTable.innerHTML = "";
+  const nameType = nameTypeSelect.value;
+
+  users.forEach((user, index) => {
+    const row = document.createElement("tr");
+
+    const nameColumn = document.createElement("td");
+    nameColumn.textContent = nameType === "first" ? user.name.first : user.name.last;
+
+    const genderColumn = document.createElement("td");
+    genderColumn.textContent = user.gender;
+
+    const emailcolumn = document.createElement("td");
+    emailcolumn.textContent = user.email;
+
+    const countryCell = document.createElement("td");
+    countryCell.textContent = user.location.country;
+
+    row.appendChild(nameColumn);
+    row.appendChild(genderColumn);
+    row.appendChild(emailcolumn);
+    row.appendChild(countryCell);
+
+    // double click to open modal
+    row.addEventListener("dblclick", () => openUserModal(user, index));
+
+    userTable.appendChild(row);
+  });
+}
+
+// open modal
+function openUserModal(user, index) {
+  selectedUserIndex = index;
+  modalImg.src = user.picture.large;
+  modalName.value = `${user.name.title} ${user.name.first} ${user.name.last}`;
+  modalAddress.value = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
+  modalEmail.value = user.email;
+  modalPhone.value = user.phone;
+  modalCell.value = user.cell;
+  modalDob.value = new Date(user.dob.date).toLocaleDateString();
+  modalGender.value = user.gender;
+
+  // reset buttons
+  toggleEditMode(false);
+  modal.show();
+}
+
+// toggle between view/edit mode
+function toggleEditMode(editMode) {
+  [modalName, modalAddress, modalEmail, modalPhone, modalCell, modalDob, modalGender].forEach(input => {
+    input.readOnly = !editMode;
+  });
+
+  editBtn.classList.toggle("d-none", editMode);
+  saveBtn.classList.toggle("d-none", !editMode);
+}
+
+// delete user
+deleteBtn.addEventListener("click", () => {
+  if (selectedUserIndex !== null) {
+    currentUsers.splice(selectedUserIndex, 1);
+    displayUsers(currentUsers);
+    modal.hide();
+  }
+});
+
+// enable edit mode
+editBtn.addEventListener("click", () => toggleEditMode(true));
+
+// pang save edits
+saveBtn.addEventListener("click", () => {
+  if (selectedUserIndex !== null) {
+    let user = currentUsers[selectedUserIndex];
+
+    // update user object
+    user.name.first = modalName.value.split(" ")[1] || user.name.first;
+    user.name.last = modalName.value.split(" ")[2] || user.name.last;
+    user.email = modalEmail.value;
+    user.phone = modalPhone.value;
+    user.cell = modalCell.value;
+    user.gender = modalGender.value;
+    user.dob.date = new Date(modalDob.value).toISOString();
+
+    displayUsers(currentUsers);
+    openUserModal(user, selectedUserIndex); // refresh modal with updated values
+  }
+});
+
+// check if validate input
+function validateInput(count) {
+  if (isNaN(count) || count < 0 || count > 1000) {
+    alert("Please enter a number between 0 and 1000.");
+    return false;
+  }
+  return true;
+}
+
+// handle generate
+function GenerateClick() {
+  const count = parseInt(userCountInput.value);
+  if (!validateInput(count)) return;
+
+  fetchUsers(count)
+    .then(users => {
+      currentUsers = users;
+      displayUsers(currentUsers);
+    })
+    .catch(error => alert("Error: " + error));
+}
+
+// handle name type change
+function nameTypeChange() {
+  if (currentUsers.length > 0) displayUsers(currentUsers);
+}
+
+generateBtn.addEventListener("click", GenerateClick);
+nameTypeSelect.addEventListener("change", nameTypeChange);
