@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Random User Generator</h2>
+
+    <div class="input-section">
+      <input type="number" id="userCount" placeholder="Enter number of users (0–1000)" min="0" max="1000">
+      <button id="fetchBtn">Generate Users</button>
+    </div>
+
+    <p id="errorMsg"></p>
+
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>
+            <select id="nameType">
+              <option value="first">First Name</option>
+              <option value="last">Last Name</option>
+            </select>
+          </th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Country</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    
+  </div>
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <img id="modalImg" src="" alt="User Picture">
+      <h3 id="modalName"></h3>
+      <p id="modalAddress"></p>
+      <p id="modalEmail"></p>
+      <p id="modalPhone"></p>
+      <p id="modalDob"></p>
+      <p id="modalGender"></p>
+
+      <div class="modal-actions">
+        <button id="editUser">✏️ Edit</button>
+        <button id="deleteUser">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
