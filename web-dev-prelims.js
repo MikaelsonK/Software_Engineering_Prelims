@@ -63,7 +63,7 @@ function showUser(index) {
     const user = usersData[index];
     currentEditIndex = index;
 
-    // Populate and make spans non-editable
+    // display original user info
     document.getElementById("userImage").src = user.picture.large;
     document.getElementById("userFullName").innerText = `${user.name.title} ${user.name.first} ${user.name.last}`;
     document.getElementById("userEmail").innerText = `${user.email}`;
@@ -72,13 +72,12 @@ function showUser(index) {
     document.getElementById("userGender").innerText = `${user.gender}`;
     document.getElementById("userDOB").innerText = new Date(user.dob.date).toLocaleDateString();
     document.getElementById("userAddress").innerText = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
-
+    
+    // set buttons to edit and delete
     document.getElementById("editUserBtn").innerText = "Edit";
-    document.getElementById("editUserBtn").classList.remove("btn-success");
     document.getElementById("editUserBtn").onclick = () => enableEditMode();
 
     document.getElementById("deleteUserBtn").innerText = "Delete";
-    document.getElementById("deleteUserBtn").classList.remove("btn-warning");
     document.getElementById("deleteUserBtn").onclick = () => showDeleteConfirmModal();
 
     const userModal = new bootstrap.Modal(document.getElementById("userModal"));
@@ -95,11 +94,9 @@ function enableEditMode() {
     document.getElementById("userAddress").contentEditable = "true";
 
     document.getElementById("editUserBtn").innerText = "Save";
-    document.getElementById("editUserBtn").classList.add("btn-success");
     document.getElementById("editUserBtn").onclick = () => saveEdits();
 
     document.getElementById("deleteUserBtn").innerText = "Cancel";
-    document.getElementById("deleteUserBtn").classList.add("btn-warning");
     document.getElementById("deleteUserBtn").onclick = () => cancelEdit();
 }
 
@@ -125,7 +122,6 @@ function saveEdits() {
     user.location.postcode = addressParts[4];
 
     displayUsers();
-
     disableEditMode();
     const userModal = bootstrap.Modal.getInstance(document.getElementById("userModal"));
     userModal.hide();
