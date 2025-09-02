@@ -1,0 +1,392 @@
+========================HTML========================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random User Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="input-container">
+            <input type="number" id="userCount" min="1" max="1000" placeholder="Enter number of random users">
+        </div>
+        
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generating random users...</p>
+        </div>
+
+        <div class="results-container">
+            <div class="results-grid">
+                <div class="results-header name-header">
+                    <select id="nameDisplay">
+                        <option value="first">First Name</option>
+                        <option value="last">Last Name</option>
+                    </select>
+                </div>
+                <div class="results-header">Gender</div>
+                <div class="results-header">Email Address</div>
+                <div class="results-header">Country</div>
+            </div>
+            
+            <div id="usersData" class="results-grid">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+========================HTML========================================
+
+========================TYPESCRIPT==================================
+
+interface UserName {
+    title: string;
+    first: string;
+    last: string;
+}
+
+interface UserLocation {
+    street: {
+        number: number;
+        name: string;
+    };
+    city: string;
+    state: string;
+    country: string;
+    postcode: number | string;
+    coordinates: {
+        latitude: string;
+        longitude: string;
+    };
+    timezone: {
+        offset: string;
+        description: string;
+    };
+}
+
+interface RandomUser {
+    gender: string;
+    name: UserName;
+    location: UserLocation;
+    email: string;
+    login: {
+        uuid: string;
+        username: string;
+        password: string;
+        salt: string;
+        md5: string;
+        sha1: string;
+        sha256: string;
+    };
+    dob: {
+        date: string;
+        age: number;
+    };
+    registered: {
+        date: string;
+        age: number;
+    };
+    phone: string;
+    cell: string;
+    id: {
+        name: string;
+        value: string;
+    };
+    picture: {
+        large: string;
+        medium: string;
+        thumbnail: string;
+    };
+    nat: string;
+}
+
+interface ApiResponse {
+    results: RandomUser[];
+    info: {
+        seed: string;
+        results: number;
+        page: number;
+        version: string;
+    };
+}
+
+type NameDisplayType = 'first' | 'last';
+
+let currentUsers: RandomUser[] = [];
+let currentNameDisplay: NameDisplayType = 'first';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const userCountInput = document.getElementById('userCount') as HTMLInputElement;
+    const nameDisplaySelect = document.getElementById('nameDisplay') as HTMLSelectElement;
+    
+    const handleKeyPress = (e: KeyboardEvent): void => {
+        if (e.key === 'Enter') {
+            generateUsers();
+        }
+    };
+    
+    const handleNameDisplayChange = (): void => {
+        currentNameDisplay = nameDisplaySelect.value as NameDisplayType;
+        if (currentUsers.length > 0) {
+            displayUsers(currentUsers);
+        }
+    };
+    
+    userCountInput.addEventListener('keypress', handleKeyPress);
+    nameDisplaySelect.addEventListener('change', handleNameDisplayChange);
+    
+    generateUsers();
+});
+
+const fetchUsers = async (count: number): Promise<RandomUser[]> => {
+    const response: Response = await fetch(`https://randomuser.me/api/?results=${count}`);
+    
+    if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    const data: ApiResponse = await response.json();
+    return data.results;
+};
+
+async function generateUsers(): Promise<void> {
+    const userCountInput = document.getElementById('userCount') as HTMLInputElement;
+    const userCount: number = parseInt(userCountInput.value) || 1;
+    
+    const isValidCount = (count: number): boolean => count >= 1 && count <= 1000;
+    
+    if (!isValidCount(userCount)) {
+        showError('Please enter a number between 1 and 1000');
+        return;
+    }
+
+    showLoading();
+    hideError();
+
+    try {
+        currentUsers = await fetchUsers(userCount);
+        displayUsers(currentUsers);
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        showError(`Failed to fetch user data: ${errorMessage}. Please check your internet connection and try again.`);
+    } finally {
+        hideLoading();
+    }
+}
+
+const createCell = (content: string): HTMLDivElement => {
+    const cell = document.createElement('div');
+    cell.className = 'result-cell';
+    cell.textContent = content;
+    return cell;
+};
+
+const getDisplayName = (user: RandomUser): string => {
+    const nameMapper = {
+        first: () => capitalizeFirst(user.name.first),
+        last: () => capitalizeFirst(user.name.last)
+    };
+    
+    return nameMapper[currentNameDisplay]();
+};
+
+function displayUsers(users: RandomUser[]): void {
+    const usersData = document.getElementById('usersData') as HTMLDivElement;
+    usersData.innerHTML = '';
+
+    const userElements = users.flatMap((user: RandomUser) => [
+        createCell(getDisplayName(user)),
+        createCell(capitalizeFirst(user.gender)),
+        createCell(user.email),
+        createCell(user.location.country)
+    ]);
+    
+    userElements.forEach((element: any) => usersData.appendChild(element));
+}
+
+const showLoading = (): void => {
+    const loadingState = document.getElementById('loadingState') as HTMLDivElement;
+    loadingState.style.display = 'block';
+};
+
+const hideLoading = (): void => {
+    const loadingState = document.getElementById('loadingState') as HTMLDivElement;
+    loadingState.style.display = 'none';
+};
+
+const showError = (message: string): void => {
+    const errorDiv = document.getElementById('errorMessage') as HTMLDivElement;
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+};
+
+const hideError = (): void => {
+    const errorDiv = document.getElementById('errorMessage') as HTMLDivElement;
+    errorDiv.style.display = 'none';
+};
+
+const capitalizeFirst = (str: string): string => 
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+    ========================TYPESCRIPT==================================
+
+    ========================CSS=========================================
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #ffffff;
+    padding: 20px;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    background-color: rgba(13, 17, 23, 0.1);
+    border: none;
+    border-radius: 20px;
+    color: #333;
+    font-size: 14px;
+    text-align: center;
+}
+
+input[type="number"]::placeholder {
+    color: #666;
+}
+
+.results-container {
+    margin-top: 20px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.results-header {
+    background-color: rgba(13, 17, 23, 0.1);
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+}
+
+.name-header {
+    padding: 0;
+    overflow: hidden;
+}
+
+.name-header select {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+}
+
+.name-header select:focus {
+    outline: none;
+}
+
+.result-cell {
+    background-color: rgba(13, 17, 23, 0.1);
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.error {
+    background-color: rgba(248, 81, 73, 0.1);
+    color: #d73a49;
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.spinner {
+    border: 2px solid rgba(13, 17, 23, 0.1);
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .results-header {
+        display: none;
+    }
+    
+    .result-cell {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .result-cell::before {
+        content: attr(data-label);
+        font-weight: bold;
+    }
+}
+
+    ========================CSS=========================================
+
+
+
