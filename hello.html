@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Users</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .input-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .simple-input::-webkit-outer-spin-button,
+        .simple-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        .simple-input[type=number] {
+        -moz-appearance: textfield;
+        }
+
+        .simple-input {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            width: 250px;
+            outline: none;
+        }
+
+        .simple-input::placeholder {
+            color: #070707;
+        }
+
+        .simple-input:focus {
+            border-color: #007bff;
+        }
+
+        .header-row {
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .user-row {
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            padding: 12px;
+        }
+
+        .user-data-row {
+            cursor: pointer;
+        }
+
+        .user-data-row:hover .user-row {
+            background: #f8f9fa;
+        }
+
+        .simple-select {
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+        }
+
+        .loading-text {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error-text {
+            text-align: center;
+            padding: 20px;
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .simple-input {
+                width: 200px;
+            }
+            
+            .col-3 {
+                flex: 0 0 auto;
+                width: 50%;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .col-3 {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <input type="number" id="userCount" placeholder="Enter number of users" min="1" max="1000" class="simple-input">
+        </div>
+
+        <div id="userContainer">
+            <div class="row mb-0" id="headerRow">
+                <div class="col-3">
+                    <div class="header-row text-center">
+                        <select id="nameSelect" class="simple-select">
+                            <option value="first">First Name</option>
+                            <option value="last">Last Name</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="header-row text-center">Gender</div>
+                </div>
+                <div class="col-3">
+                    <div class="header-row text-center">Email Address</div>
+                </div>
+                <div class="col-3">
+                    <div class="header-row text-center">Country</div>
+                </div>
+            </div>
+
+            <div id="userRows"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img id="userPhoto" src="" alt="User Photo" class="img-fluid rounded mb-3" style="max-width: 200px;">
+                        </div>
+                        <div class="col-md-8">
+                            <form id="userForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-2">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="userTitle" readonly>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="userFirstName" readonly>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="userLastName" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="userEmail" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Gender</label>
+                                        <select class="form-control" id="userGender" disabled>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="userPhone" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Cell Phone</label>
+                                        <input type="text" class="form-control" id="userCell" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="userDob" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" id="userAddress" rows="3" readonly></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="editBtn" onclick="toggleEditMode()">Edit</button>
+                    <button type="button" class="btn btn-success d-none" id="saveBtn" onclick="saveUser()">Save</button>
+                    <button type="button" class="btn btn-secondary d-none" id="cancelBtn" onclick="cancelEdit()">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteUser()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentData = [];
+        let currentEditingIndex = -1;
+        let originalUserData = {};
+
+        function fetchUsers() {
+            const count = document.getElementById('userCount').value;
+            const userRows = document.getElementById('userRows');
+            
+            if (!count || count < 1 || count > 1000) return;
+
+            userRows.innerHTML = `
+                <div class="loading-text">Loading users...</div>
+            `;
+
+            fetch(`https://randomuser.me/api/?results=${count}`)
+                .then(response => response.json())
+                .then(data => {
+                    currentData = data.results;
+                    displayUsers();
+                })
+                .catch(error => {
+                    userRows.innerHTML = `
+                        <div class="error-text">
+                            Error loading users. Please try again.
+                        </div>
+                    `;
+                });
+        }
+
+        function displayUsers() {
+            const nameSelect = document.getElementById('nameSelect').value;
+            const userRows = document.getElementById('userRows');
+            
+            if (currentData.length === 0) {
+                userRows.innerHTML = '';
+                return;
+            }
+            
+            userRows.innerHTML = currentData.map((user, index) => {
+                const name = nameSelect === 'first' ? user.name.first : user.name.last;
+                const gender = user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
+                return `
+                    <div class="row user-data-row" data-user-index="${index}" ondblclick="openUserModal(${index})">
+                        <div class="col-3">
+                            <div class="user-row text-center">${name}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="user-row text-center">${gender}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="user-row text-center">
+                                <span style="word-break: break-all;">${user.email}</span>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="user-row text-center">${user.location.country}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openUserModal(index) {
+            currentEditingIndex = index;
+            const user = currentData[index];
+            
+            originalUserData = JSON.parse(JSON.stringify(user));
+            document.getElementById('userPhoto').src = user.picture.large;
+            document.getElementById('userTitle').value = user.name.title;
+            document.getElementById('userFirstName').value = user.name.first;
+            document.getElementById('userLastName').value = user.name.last;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userGender').value = user.gender;
+            document.getElementById('userPhone').value = user.phone;
+            document.getElementById('userCell').value = user.cell;
+            document.getElementById('userDob').value = user.dob.date.split('T')[0];
+            
+            const address = `${user.location.street.number} ${user.location.street.name}\n${user.location.city}, ${user.location.state} ${user.location.postcode}\n${user.location.country}`;
+            document.getElementById('userAddress').value = address;
+            
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        }
+
+        function toggleEditMode() {
+            const formElements = document.querySelectorAll('#userForm input, #userForm select, #userForm textarea');
+            const editBtn = document.getElementById('editBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            formElements.forEach(element => {
+                if (element.id !== 'userPhoto') {
+                    element.removeAttribute('readonly');
+                    element.removeAttribute('disabled');
+                }
+            });
+            
+            editBtn.classList.add('d-none');
+            saveBtn.classList.remove('d-none');
+            cancelBtn.classList.remove('d-none');
+        }
+
+        function saveUser() {
+            const user = currentData[currentEditingIndex];
+            
+            user.name.title = document.getElementById('userTitle').value;
+            user.name.first = document.getElementById('userFirstName').value;
+            user.name.last = document.getElementById('userLastName').value;
+            user.email = document.getElementById('userEmail').value;
+            user.gender = document.getElementById('userGender').value;
+            user.phone = document.getElementById('userPhone').value;
+            user.cell = document.getElementById('userCell').value;
+            user.dob.date = document.getElementById('userDob').value + 'T00:00:00.000Z';
+            
+            const addressLines = document.getElementById('userAddress').value.split('\n');
+            if (addressLines.length >= 2) {
+                const streetParts = addressLines[0].split(' ');
+                user.location.street.number = streetParts[0] || '';
+                user.location.street.name = streetParts.slice(1).join(' ') || '';
+                
+                const cityStateParts = addressLines[1].split(', ');
+                if (cityStateParts.length >= 2) {
+                    user.location.city = cityStateParts[0] || '';
+                    const statePostcode = cityStateParts[1].split(' ');
+                    user.location.state = statePostcode[0] || '';
+                    user.location.postcode = statePostcode.slice(1).join(' ') || '';
+                }
+                
+                if (addressLines[2]) {
+                    user.location.country = addressLines[2];
+                }
+            }
+            displayUsers();
+            cancelEdit();
+            bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+        }
+
+        function cancelEdit() {
+            const formElements = document.querySelectorAll('#userForm input, #userForm select, #userForm textarea');
+            const editBtn = document.getElementById('editBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            if (currentEditingIndex >= 0) {
+                const user = originalUserData;
+                document.getElementById('userTitle').value = user.name.title;
+                document.getElementById('userFirstName').value = user.name.first;
+                document.getElementById('userLastName').value = user.name.last;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userGender').value = user.gender;
+                document.getElementById('userPhone').value = user.phone;
+                document.getElementById('userCell').value = user.cell;
+                document.getElementById('userDob').value = user.dob.date.split('T')[0];
+                
+                const address = `${user.location.street.number} ${user.location.street.name}\n${user.location.city}, ${user.location.state} ${user.location.postcode}\n${user.location.country}`;
+                document.getElementById('userAddress').value = address;
+            }
+            
+            formElements.forEach(element => {
+                element.setAttribute('readonly', true);
+                if (element.tagName === 'SELECT') {
+                    element.setAttribute('disabled', true);
+                }
+            });
+            
+            editBtn.classList.remove('d-none');
+            saveBtn.classList.add('d-none');
+            cancelBtn.classList.add('d-none');
+        }
+
+        function deleteUser() {
+            if (currentEditingIndex >= 0) {
+                currentData.splice(currentEditingIndex, 1);
+                displayUsers();
+                bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+                currentEditingIndex = -1;
+            }
+        }
+        document.getElementById('userCount').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value > 1000) {
+                this.value = 1000;
+            } else if (value < 0) {
+                this.value = '';
+            }
+            fetchUsers();
+        });
+        
+        document.getElementById('nameSelect').addEventListener('change', displayUsers);
+
+        // Reset form when modal is closed
+        document.getElementById('userModal').addEventListener('hidden.bs.modal', function() {
+            cancelEdit();
+            currentEditingIndex = -1;
+        });
+
+        // Initialize
+        fetchUsers();
+    </script>
+</body>
+</html>
