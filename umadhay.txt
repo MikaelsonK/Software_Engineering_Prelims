@@ -1,0 +1,115 @@
+html code not updated yet 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+  <div class="container text-center mt-5">
+    <h1 class="mb-4 text-primary fw-bold">Random User Generator</h1>
+
+    <!-- Controls Box -->
+    <div class="d-inline-block p-4 bg-white rounded shadow mb-4">
+      <input type="number" id="userCount" placeholder="(0–1000)" min="0" max="1000" class="form-control d-inline-block w-auto me-2">
+      <select id="nameOption" class="form-select d-inline-block w-auto me-2">
+        <option value="firstN">First Name</option>
+        <option value="lastN">Last Name</option>
+      </select>
+      <button id="generateButton" class="btn btn-primary">Generate</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover align-middle">
+        <thead class="table-primary text-center">
+          <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <tbody id="userTable" class="text-center"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+// Elements and event listener
+document.getElementById('generateButton').addEventListener('click', async () => {
+  const button = document.getElementById('generateButton')
+  const count = Number(document.getElementById('userCount').value)
+  const nameOption = document.getElementById('nameOption').value
+  const tableBody = document.getElementById('userTable')
+
+  // Clear previous table rows
+  tableBody.innerHTML = ''
+
+  // Check if user input is valid
+  if (!count || isNaN(count) || count < 0 || count > 1000) {
+    alert("Please enter a valid number between 0 and 1000")
+    return;
+  }
+
+  // Change button text to indicate loading
+  const originalText = button.textContent
+  button.textContent = "Loading..."
+  button.disabled = true
+
+   // Fetch users from the API
+  try {
+    const response = await fetch(`https://randomuser.me/api/?results=${count}`)
+    if (!response.ok) {
+      throw new Error("Please check your Wi-Fi connection")
+    }
+    const data = await response.json()
+
+     // Create all rows first using map
+    const rows = data.results.map(user => {
+      const row = document.createElement('tr')
+    
+     // Decide which name to show
+      const name = nameOption === 'first' ? user.name.first : user.name.last
+
+     // Create and append individual cells
+      const nameCell = document.createElement('td')
+      nameCell.textContent = name
+      row.appendChild(nameCell)
+
+      const genderCell = document.createElement('td')
+      genderCell.textContent = user.gender
+      row.appendChild(genderCell)
+
+      const emailCell = document.createElement('td')
+      emailCell.textContent = user.email
+      row.appendChild(emailCell)
+
+      const countryCell = document.createElement('td')
+      countryCell.textContent = user.location.country
+      row.appendChild(countryCell)
+
+      return row
+    });
+
+     // Append all rows to the table
+    rows.forEach(row => tableBody.appendChild(row))
+
+
+  } catch (error) {
+    alert("Unable to load users. Please try again later.")
+    console.error(error);
+  } finally {
+    // Restore original button text and enable it again
+    button.textContent = originalText
+    button.disabled = false
+  }
+});
