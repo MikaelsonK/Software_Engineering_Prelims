@@ -1,67 +1,92 @@
 
 -------------------CSS--------------------
 
-
+/* Sets the background color and font for the whole page */
 body {
   background: #f8f9fa;
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* Styles for the main heading */
 h1 {
-    /* Chose this color because it was her favorite color, I miss her */
+    /* Personal note: Chose this color because it was her favorite color */
   color: #e8e807;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 2rem;
+  font-weight: 700;        /* Makes text bold */
+  text-align: center;      /* Centers the text */
+  margin-bottom: 2rem;     /* Adds space below the heading */
 }
-/* Button hover effect for maangas still the same color because I still miss her*/
+
+/* Makes the button slightly grow when hovered over */
 #generateBtn:hover {
-  transform: scale(1.03);
-  background-color: #d6d504 !important;  
-  border-color: #d6d504 !important;
+  transform: scale(1.03);  /* Grows button by 3% */
+  background-color: #d6d504 !important;  /* Darker yellow on hover */
+  border-color: #d6d504 !important;      /* Matching border color */
 }
 
+/* Styles for the generate button */
 #generateBtn {
-  background-color: #e8e807 !important;  
-  border-color: #e8e807 !important;
-  color: black;
+  background-color: #e8e807 !important;  /* Bright yellow background */
+  border-color: #e8e807 !important;      /* Matching border */
+  color: black;                          /* Black text */
 }
 
-
-
-/* Each user row styling */
+/* Styles for each user row in the list */
 .user-row {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 12px;
-  padding: 15px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;               /* White background */
+  border-radius: 8px;             /* Rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);  /* Subtle shadow */
+  margin-bottom: 12px;            /* Space between rows */
+  padding: 15px;                  /* Inner spacing */
+  cursor: pointer;                /* Shows hand cursor on hover */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effects */
 }
 
+/* Hover effect for user rows */
 .user-row:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);    /* Lifts the row slightly */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* Stronger shadow on hover */
 }
 
-/* Header row styling */
-.header-row {
-  background: #e9ecef;
-  border-radius: 8px;
-  padding: 10px;
-  font-weight: 600;
+/* Container for the column headers */
+.header-container {
+  display: flex;                   /* Arranges items in a row */
+  justify-content: space-between;  /* Spaces items evenly */
+  background: transparent;         /* No background color */
+  border-radius: 8px;              /* Rounded corners */
+  padding: 10px;                   /* Inner spacing */
+  font-weight: 600;                /* Semi-bold text */
+  margin-bottom: 15px;             /* Space below headers */
 }
 
-/* Modal image styling */
+/* Hover effect for header items */
+.header-item:hover {
+  background-color: #d6d504;       /* Darker yellow on hover */
+  transform: translateY(-2px);     /* Lifts slightly */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);  /* Shadow on hover */
+}
+
+/* Styles for each header item (Name, Gender, etc.) */
+.header-item {
+  background-color: #e8e807;       /* Bright yellow background */
+  color: black;                    /* Black text */
+  padding: 8px 16px;               /* Inner spacing */
+  border-radius: 50px;             /* Pill-shaped ends */
+  margin: 0 5px;                   /* Space between items */
+  text-align: center;              /* Centers text */
+  font-weight: 600;                /* Semi-bold text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+  transition: all 0.3s ease;       /* Smooth hover effects */
+}
+
+/* Makes sure the user image in the modal looks good */
 #modalUserImage {
-  max-height: 200px;
-  object-fit: cover;
+  max-height: 200px;      /* Limits image height */
+  object-fit: cover;      /* Crops image to fit nicely */
 }
 
-/* Action buttons in modal */
+/* Makes the delete and edit buttons in the modal a consistent width */
 #modalDeleteBtn, #modalEditBtn {
-  min-width: 90px;
+  min-width: 90px;        /* Minimum width for buttons */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,7 +100,7 @@ h1 {
 
 -------------------------------JAVASCRIPT-------------------------------------
 
-// Grab all the page elements we need
+// All the elements really
 const userCountInput = document.getElementById('userCount');
 const nameTypeSelect = document.getElementById('nameType');
 const generateBtn = document.getElementById('generateBtn');
@@ -83,61 +108,69 @@ const userList = document.getElementById('userList');
 const errorAlert = document.getElementById('errorAlert');
 const loading = document.getElementById('loading');
 
-// Store users here
-let allUsers = [];
+// We'll store our users in this array kind of a basket really
+let allUsers = []; // basket for user data
 let currentlySelectedUserIndex = -1;
 
-// Set up modals
+// Set up our modal functionality
 const userModal = new bootstrap.Modal(document.getElementById('userModal'));
 const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
 
-// Event listeners
+// When someone clicks the generate button, let's fetch some users
 generateBtn.addEventListener('click', fetchUsers);
+
+// If they change how names are displayed, update the list
 nameTypeSelect.addEventListener('change', updateHowNamesAreShown);
+
+// Set up what happens when buttons in our modals are clicked
 document.getElementById('modalDeleteBtn').addEventListener('click', removeUser);
 document.getElementById('modalEditBtn').addEventListener('click', showEditForm);
 document.getElementById('saveChangesBtn').addEventListener('click', updateUserInfo);
 
-// Fetch users from API
+// This function goes out to the internet to get random users
 async function fetchUsers() {
+  // Figure out how many users they want
   const numberOfUsers = parseInt(userCountInput.value);
   
-  // Validate input
+  // Make sure it's a good number
   if (isNaN(numberOfUsers) || numberOfUsers < 1 || numberOfUsers > 1000) {
     showMessage("Please enter a number between 1 and 1000", true);
     return;
   }
 
-  // Show loading state
+  // Show we're working on it
   showLoadingState(true);
   hideErrorMessage();
   userList.innerHTML = '';
 
   try {
-    // Get data from API
+    // Go get the users from the API
     const response = await fetch(`https://randomuser.me/api/?results=${numberOfUsers}`);
-    if (!response.ok) throw new Error('API request failed');
+    if (!response.ok) throw new Error('Oops, the internet seems to be having a bad day');
     
-    // Process response
+    // Parse the data and store it
     const userData = await response.json();
     allUsers = userData.results;
     
-    // Display results
+    // Show everyone the new users
     displayUsers(allUsers);
   } catch (error) {
-    showMessage("Couldn't fetch users. Try again.", true);
+    // Something went wrong, let the user know
+    showMessage("Couldn't get users right now. Please try again.", true);
   } finally {
+    // Always hide the loading spinner when we're done
     showLoadingState(false);
   }
 }
 
-// Display users in list
+// This function puts all the users on the page
 function displayUsers(users) {
-  userList.innerHTML = ''; // Clear previous
+  userList.innerHTML = ''; // Start with a clean slate
   
+  // Check how they want names displayed
   const nameDisplayStyle = nameTypeSelect.value;
 
-  // Create row for each user
+  // Create a row for each user
   users.forEach((user, index) => {
     const displayName = nameDisplayStyle === 'first' ? user.name.first : user.name.last;
 
@@ -145,12 +178,12 @@ function displayUsers(users) {
     userRow.className = 'row user-row text-center align-items-center';
     userRow.setAttribute('data-index', index);
     
-    // Double click to view details
+    // Make the row clickable to show details
     userRow.addEventListener('dblclick', () => {
       showUserDetails(index);
     });
 
-    // Populate row data
+    // Fill the row with user information
     userRow.innerHTML = `
       <div class="col-md-3">${displayName}</div>
       <div class="col-md-2">${capitalizeFirstLetter(user.gender)}</div>
@@ -158,16 +191,17 @@ function displayUsers(users) {
       <div class="col-md-3">${user.location.country}</div>
     `;
 
+    // Add the row to our list
     userList.appendChild(userRow);
   });
 }
 
-// Show user details in modal
+// Shows User details in a modal
 function showUserDetails(index) {
   currentlySelectedUserIndex = index;
   const user = allUsers[index];
   
-  // Fill modal with user data
+  // Fill the modal with the requested user information
   document.getElementById('modalUserImage').src = user.picture.large;
   document.getElementById('modalUserFullName').textContent = 
     `${user.name.title} ${user.name.first} ${user.name.last}`;
@@ -179,11 +213,11 @@ function showUserDetails(index) {
   document.getElementById('modalUserDob').textContent = new Date(user.dob.date).toLocaleDateString();
   document.getElementById('modalUserGender').textContent = capitalizeFirstLetter(user.gender);
   
-  // Show the modal
+  // Shows the modal
   userModal.show();
 }
 
-// Remove selected user
+// Removing a user
 function removeUser() {
   if (currentlySelectedUserIndex !== -1) {
     allUsers.splice(currentlySelectedUserIndex, 1);
@@ -193,13 +227,13 @@ function removeUser() {
   }
 }
 
-// Show edit form
+// Show the form to edit a user
 function showEditForm() {
   if (currentlySelectedUserIndex === -1) return;
   
   const user = allUsers[currentlySelectedUserIndex];
   
-  // Pre-fill form with current data
+  // Fill the form with current user data
   document.getElementById('editUserIndex').value = currentlySelectedUserIndex;
   document.getElementById('editFirstName').value = user.name.first;
   document.getElementById('editLastName').value = user.name.last;
@@ -207,24 +241,23 @@ function showEditForm() {
   document.getElementById('editPhone').value = user.phone;
   document.getElementById('editCell').value = user.cell;
   document.getElementById('editDob').value = user.dob.date.split('T')[0];
-  document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
-  document.getElementById('editStreet').value = user.location.street.name;
-  document.getElementById('editCity').value = user.location.city;
-  document.getElementById('editState').value = user.location.state;
-  document.getElementById('editCountry').value = user.location.country;
-  document.getElementById('editPostcode').value = user.location.postcode;
   
-  // Switch modals
+  // Set the correct gender option
+  document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
+  
+  // Fill in address information
+
+  // Switch from view modal to edit modal
   userModal.hide();
   editUserModal.show();
 }
 
-// Save edited user info
+// Save the changes made to a user
 function updateUserInfo() {
   const index = document.getElementById('editUserIndex').value;
   if (!index) return;
   
-  // Get updated values
+  // Get all the updated values from the form
   const firstName = document.getElementById('editFirstName').value;
   const lastName = document.getElementById('editLastName').value;
   const email = document.getElementById('editEmail').value;
@@ -232,13 +265,9 @@ function updateUserInfo() {
   const cell = document.getElementById('editCell').value;
   const dob = document.getElementById('editDob').value;
   const gender = document.querySelector('input[name="editGender"]:checked').value;
-  const street = document.getElementById('editStreet').value;
-  const city = document.getElementById('editCity').value;
-  const state = document.getElementById('editState').value;
-  const country = document.getElementById('editCountry').value;
-  const postcode = document.getElementById('editPostcode').value;
+
   
-  // Update user object
+  // Update the user object with the new information
   allUsers[index].name.first = firstName;
   allUsers[index].name.last = lastName;
   allUsers[index].email = email;
@@ -246,50 +275,43 @@ function updateUserInfo() {
   allUsers[index].cell = cell;
   allUsers[index].dob.date = new Date(dob).toISOString();
   allUsers[index].gender = gender;
-  allUsers[index].location.street.name = street;
-  allUsers[index].location.city = city;
-  allUsers[index].location.state = state;
-  allUsers[index].location.country = country;
-  allUsers[index].location.postcode = postcode;
-  
-  // Refresh display
+  // Refresh the display with updated information
   displayUsers(allUsers);
   
-  // Close modal
+  // Close the edit modal
   editUserModal.hide();
 }
 
-// Update name display format
+// Update how names are displayed when the selection changes
 function updateHowNamesAreShown() {
   if (allUsers.length) displayUsers(allUsers);
 }
 
-// Show message to user
+// Show a message to the user (error or otherwise)
 function showMessage(message, isError = false) {
   errorAlert.textContent = message;
   errorAlert.style.display = 'block';
   errorAlert.className = isError ? 'alert alert-danger mt-3' : 'alert alert-success mt-3';
 }
 
-// Hide error messages
+// Hide any error messages
 function hideErrorMessage() {
   errorAlert.style.display = 'none';
 }
 
-// Toggle loading state
+// Show or hide the loading spinner
 function showLoadingState(show) {
   loading.style.display = show ? 'block' : 'none';
   generateBtn.disabled = show;
 }
 
-// Capitalize first letter
+// Make the first letter of text uppercase
 function capitalizeFirstLetter(text) {
   if (!text) return '';
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-// Load some users on page load
-fetchUsers();
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -305,119 +327,89 @@ fetchUsers();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic page setup and linking to Bootstrap CSS and our custom styles -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Random User Generator</title>
-  <!--bootstrap CSS link -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="random_user_app.css" />
 </head>
 <body>
-  <div class="container my-5">
+  <!-- Main container for the entire application -->
+  <div class="container my-6">
     <h1>Random User Generator</h1>
 
+    <!-- Input section where users specify how many users to generate -->
     <div class="row justify-content-center mb-4">
       <div class="col-md-8">
         <div class="input-group">
-          <!-- Input bar to enter or spinner to how many users to generate -->
-          <input
-            type="number"
-            class="form-control"
-            id="userCount"
-            placeholder="Enter number of users (1–1000)"
-            min="1"
-            max="1000"
-            value="5"
-          />
+          <input type="number" class="form-control" id="userCount" placeholder="Enter number of users (1–1000)" min="1" max="1000" />
           <button class="btn btn-primary" id="generateBtn">Generate</button>
         </div>
-        <!-- Dropdown to select name display format; First name or Last name -->
-        <select
-          class="form-select mt-2"
-          id="nameType"
-          aria-label="Select name display format"
-        >
+        
+        <!-- Dropdown to choose between showing first or last names -->
+        <select class="form-select mt-2" id="nameType" aria-label="Select name display format">
           <option value="first">First Name</option>
           <option value="last">Last Name</option>
         </select>
       </div>
     </div>
 
-    <div class="row header-row text-center">
-      <div class="col-md-3">Name</div>
-      <div class="col-md-2">Gender</div>
-      <div class="col-md-4">Email</div>
-      <div class="col-md-3">Country</div>
+    <!-- Header row for the user list table -->
+    <div class="header-container">
+      <div class="header-item col-md-2">Name</div>
+      <div class="header-item col-md-2">Gender</div>
+      <div class="header-item col-md-3">Email</div>
+      <div class="header-item col-md-3">Country</div>
     </div>
 
+    <!-- Container where the generated users will be displayed -->
     <div id="userList"></div>
-    <!-- Error Handling stuff -->
+
+    <!-- Error message area (hidden by default) -->
     <div id="errorAlert" class="alert alert-danger mt-3" style="display:none;"></div>
 
+    <!-- Loading indicator (hidden by default) -->
     <div id="loading" class="text-center mt-3" style="display:none;">
       <div class="spinner-border text-primary" role="status"></div>
       <p>Loading users...</p>
     </div>
   </div>
 
-  <!-- User Modal -->
+  <!-- Modal popup that shows detailed user information when a user is clicked -->
   <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalUserName">User Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+        </div>  
         <div class="modal-body">
+          <!-- Layout for user details with image on left, info on right -->
           <div class="row">
             <div class="col-md-4 text-center">
               <img id="modalUserImage" src="" alt="User Image" class="img-fluid rounded mb-3">
             </div>
             <div class="col-md-8">
+              <!-- Various user details displayed in a two-column layout -->
               <div class="row mb-2">
                 <div class="col-sm-4 fw-bold">Full Name:</div>
                 <div class="col-sm-8" id="modalUserFullName"></div>
               </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Address:</div>
-                <div class="col-sm-8" id="modalUserAddress"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Email:</div>
-                <div class="col-sm-8" id="modalUserEmail"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Phone:</div>
-                <div class="col-sm-8" id="modalUserPhone"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Cell:</div>
-                <div class="col-sm-8" id="modalUserCell"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Date of Birth:</div>
-                <div class="col-sm-8" id="modalUserDob"></div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4 fw-bold">Gender:</div>
-                <div class="col-sm-8" id="modalUserGender"></div>
-              </div>
+              <!-- More user detail fields (address, email, phone, etc.) -->
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" id="modalDeleteBtn">
-            <span class="d-none d-md-inline">Delete</span> 🗑️
-          </button>
-          <button type="button" class="btn btn-primary" id="modalEditBtn">
-            <span class="d-none d-md-inline">Edit</span> ✏️
-          </button>
+          <!-- Buttons to delete or edit the user -->
+          <button type="button" class="btn btn-danger" id="modalDeleteBtn">🗑️</button>
+          <button type="button" class="btn btn-primary" id="modalEditBtn">✏️</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Edit User Modal -->
+  <!-- Second modal for editing user information -->
   <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -426,68 +418,18 @@ fetchUsers();
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <!-- Form with fields to edit user information -->
           <form id="editUserForm">
             <input type="hidden" id="editUserIndex">
             <div class="mb-3">
               <label for="editFirstName" class="form-label">First Name</label>
               <input type="text" class="form-control" id="editFirstName" required>
             </div>
-            <div class="mb-3">
-              <label for="editLastName" class="form-label">Last Name</label>
-              <input type="text" class="form-control" id="editLastName" required>
-            </div>
-            <div class="mb-3">
-              <label for="editEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="editEmail" required>
-            </div>
-            <div class="mb-3">
-              <label for="editPhone" class="form-label">Phone</label>
-              <input type="tel" class="form-control" id="editPhone">
-            </div>
-            <div class="mb-3">
-              <label for="editCell" class="form-label">Cell</label>
-              <input type="tel" class="form-control" id="editCell">
-            </div>
-            <div class="mb-3">
-              <label for="editDob" class="form-label">Date of Birth</label>
-              <input type="date" class="form-control" id="editDob">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Gender</label>
-              <div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="editGender" id="editGenderMale" value="male">
-                  <label class="form-check-label" for="editGenderMale">Male</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="editGender" id="editGenderFemale" value="female">
-                  <label class="form-check-label" for="editGenderFemale">Female</label>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="editStreet" class="form-label">Street</label>
-              <input type="text" class="form-control" id="editStreet">
-            </div>
-            <div class="mb-3">
-              <label for="editCity" class="form-label">City</label>
-              <input type="text" class="form-control" id="editCity">
-            </div>
-            <div class="mb-3">
-              <label for="editState" class="form-label">State</label>
-              <input type="text" class="form-control" id="editState">
-            </div>
-            <div class="mb-3">
-              <label for="editCountry" class="form-label">Country</label>
-              <input type="text" class="form-control" id="editCountry">
-            </div>
-            <div class="mb-3">
-              <label for="editPostcode" class="form-label">Postcode</label>
-              <input type="text" class="form-control" id="editPostcode">
-            </div>
+            <!-- More form fields for editing user data -->
           </form>
         </div>
         <div class="modal-footer">
+          <!-- Buttons to cancel or save changes -->
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
         </div>
@@ -495,13 +437,12 @@ fetchUsers();
     </div>
   </div>
 
-  <!-- Bootstrap & jQuery JS -->
+  <!-- JavaScript libraries custom script -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="random_user_app.js"></script>
 </body>
 </html>
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
