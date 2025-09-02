@@ -88,7 +88,6 @@ h1 {
 #modalDeleteBtn, #modalEditBtn {
   min-width: 90px;        /* Minimum width for buttons */
 }
-
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -99,6 +98,15 @@ h1 {
 
 
 -------------------------------JAVASCRIPT-------------------------------------
+// Wait for DOM to be fully loaded before executing
+document.addEventListener('DOMContentLoaded', function() {
+  // All your existing JavaScript code here
+  // (wrap everything inside this event listener)
+  
+  const userCountInput = document.getElementById('userCount');
+  const nameTypeSelect = document.getElementById('nameType');
+  // ... rest of your code
+});
 
 // All the elements really
 const userCountInput = document.getElementById('userCount');
@@ -238,9 +246,7 @@ function showEditForm() {
   document.getElementById('editFirstName').value = user.name.first;
   document.getElementById('editLastName').value = user.name.last;
   document.getElementById('editEmail').value = user.email;
-  document.getElementById('editPhone').value = user.phone;
-  document.getElementById('editCell').value = user.cell;
-  document.getElementById('editDob').value = user.dob.date.split('T')[0];
+
   
   // Set the correct gender option
   document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
@@ -312,7 +318,6 @@ function capitalizeFirstLetter(text) {
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -327,89 +332,121 @@ function capitalizeFirstLetter(text) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic page setup and linking to Bootstrap CSS and our custom styles -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Random User Generator</title>
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="random_user_app.css" />
 </head>
 <body>
-  <!-- Main container for the entire application -->
   <div class="container my-6">
     <h1>Random User Generator</h1>
 
-    <!-- Input section where users specify how many users to generate -->
     <div class="row justify-content-center mb-4">
       <div class="col-md-8">
         <div class="input-group">
-          <input type="number" class="form-control" id="userCount" placeholder="Enter number of users (1–1000)" min="1" max="1000" />
+          <!-- Input bar -->
+          <input
+            type="number"
+            class="form-control"
+            id="userCount"
+            placeholder="Enter number of users (1–1000)"
+            min="1"
+            max="1000"
+            value="0"
+          />
           <button class="btn btn-primary" id="generateBtn">Generate</button>
         </div>
-        
-        <!-- Dropdown to choose between showing first or last names -->
-        <select class="form-select mt-2" id="nameType" aria-label="Select name display format">
+        <!-- Dropdown to select name display format -->
+        <select
+          class="form-select mt-2"
+          id="nameType"
+          aria-label="Select name display format"
+        >
           <option value="first">First Name</option>
           <option value="last">Last Name</option>
         </select>
       </div>
     </div>
 
-    <!-- Header row for the user list table -->
-    <div class="header-container">
-      <div class="header-item col-md-2">Name</div>
-      <div class="header-item col-md-2">Gender</div>
-      <div class="header-item col-md-3">Email</div>
-      <div class="header-item col-md-3">Country</div>
-    </div>
+    <!-- Updated Header Row -->
+<div class="header-container">
+  <div class="header-item col-md-2" >Name</div>
+  <div class="header-item col-md-2">Gender</div>
+  <div class="header-item col-md-3">Email</div>
+  <div class="header-item col-md-3">Country</div>
+</div>
 
-    <!-- Container where the generated users will be displayed -->
     <div id="userList"></div>
 
-    <!-- Error message area (hidden by default) -->
+    <!-- Error Handling -->
     <div id="errorAlert" class="alert alert-danger mt-3" style="display:none;"></div>
 
-    <!-- Loading indicator (hidden by default) -->
     <div id="loading" class="text-center mt-3" style="display:none;">
       <div class="spinner-border text-primary" role="status"></div>
       <p>Loading users...</p>
     </div>
   </div>
 
-  <!-- Modal popup that shows detailed user information when a user is clicked -->
+  <!-- User Modal -->
   <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalUserName">User Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>  
+        </div>
         <div class="modal-body">
-          <!-- Layout for user details with image on left, info on right -->
           <div class="row">
             <div class="col-md-4 text-center">
               <img id="modalUserImage" src="" alt="User Image" class="img-fluid rounded mb-3">
             </div>
             <div class="col-md-8">
-              <!-- Various user details displayed in a two-column layout -->
               <div class="row mb-2">
                 <div class="col-sm-4 fw-bold">Full Name:</div>
                 <div class="col-sm-8" id="modalUserFullName"></div>
               </div>
-              <!-- More user detail fields (address, email, phone, etc.) -->
+              <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">Address:</div>
+                <div class="col-sm-8" id="modalUserAddress"></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">Email:</div>
+                <div class="col-sm-8" id="modalUserEmail"></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">Phone:</div>
+                <div class="col-sm-8" id="modalUserPhone"></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">Cell:</div>
+                <div class="col-sm-8" id="modalUserCell"></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-4 fw-bold">Date of Birth:</div>
+                <div class="col-sm-8" id="modalUserDob"></div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4 fw-bold">Gender:</div>
+                <div class="col-sm-8" id="modalUserGender"></div>
+              </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <!-- Buttons to delete or edit the user -->
-          <button type="button" class="btn btn-danger" id="modalDeleteBtn">🗑️</button>
-          <button type="button" class="btn btn-primary" id="modalEditBtn">✏️</button>
+          <button type="button" class="btn btn-danger" id="modalDeleteBtn">
+            <span class="d-none d-md-inline">Delete</span> 🗑️
+          </button>
+          <button type="button" class="btn btn-primary" id="modalEditBtn">
+            <span class="d-none d-md-inline">Edit</span> ✏️
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Second modal for editing user information -->
+  <!-- Edit User Modal -->
   <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -418,18 +455,68 @@ function capitalizeFirstLetter(text) {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Form with fields to edit user information -->
           <form id="editUserForm">
             <input type="hidden" id="editUserIndex">
             <div class="mb-3">
               <label for="editFirstName" class="form-label">First Name</label>
               <input type="text" class="form-control" id="editFirstName" required>
             </div>
-            <!-- More form fields for editing user data -->
+            <div class="mb-3">
+              <label for="editLastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="editLastName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="editPhone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="editPhone">
+            </div>
+            <div class="mb-3">
+              <label for="editCell" class="form-label">Cell</label>
+              <input type="tel" class="form-control" id="editCell">
+            </div>
+            <div class="mb-3">
+              <label for="editDob" class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" id="editDob">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Gender</label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="editGender" id="editGenderMale" value="male">
+                  <label class="form-check-label" for="editGenderMale">Male</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="editGender" id="editGenderFemale" value="female">
+                  <label class="form-check-label" for="editGenderFemale">Female</label>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editStreet" class="form-label">Street</label>
+              <input type="text" class="form-control" id="editStreet">
+            </div>
+            <div class="mb-3">
+              <label for="editCity" class="form-label">City</label>
+              <input type="text" class="form-control" id="editCity">
+            </div>
+            <div class="mb-3">
+              <label for="editState" class="form-label">State</label>
+              <input type="text" class="form-control" id="editState">
+            </div>
+            <div class="mb-3">
+              <label for="editCountry" class="form-label">Country</label>
+              <input type="text" class="form-control" id="editCountry">
+            </div>
+            <div class="mb-3">
+              <label for="editPostcode" class="form-label">Postcode</label>
+              <input type="text" class="form-control" id="editPostcode">
+            </div>
           </form>
         </div>
         <div class="modal-footer">
-          <!-- Buttons to cancel or save changes -->
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
         </div>
@@ -437,12 +524,13 @@ function capitalizeFirstLetter(text) {
     </div>
   </div>
 
-  <!-- JavaScript libraries custom script -->
+  <!-- Bootstrap & jQuery JS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="random_user_app.js"></script>
 </body>
 </html>
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
