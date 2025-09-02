@@ -1,4 +1,4 @@
-index.html 
+index.html
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,11 +6,16 @@ index.html
   <title>Assignment 01</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- bootstrap CSS for layout and design -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- bootstrap JS (needed for modal) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- our own css file -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- input field where we enter how many users to generate -->
   <div class="d-flex justify-content-center">
     <div class="container m-5">
       <form class="d-flex justify-content-center">
@@ -24,14 +29,17 @@ index.html
     </div>
   </div>
 
+  <!-- container for table-like user list -->
   <div class="container" id="body">
     <div class="row mb-3">
+      <!-- dropdown for sorting users -->
       <div class="col-md-3 d-flex justify-content-center">
         <select id="sort_by" class="form-select pill-select text-center">
           <option value="first_name">First Name</option>
           <option value="last_name">Last Name</option>
         </select>
       </div>
+      <!-- headers -->
       <div class="col-md-3 d-flex justify-content-center">
         <div class="pill-header">Gender</div>
       </div>
@@ -44,25 +52,66 @@ index.html
     </div>
   </div>
 
+  <!-- modal that pops up when we double-click a user row -->
+  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">User Information</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex align-items-center mb-3">
+            <!-- profile picture -->
+            <img id="user-picture" class="rounded-circle me-3" width="100" height="100" />
+            <div>
+              <h5 id="user-fullname"></h5>
+              <p class="mb-1"><strong>Email:</strong> <span id="user-email"></span></p>
+              <p class="mb-1"><strong>Phone:</strong> <span id="user-phone"></span></p>
+              <p class="mb-1"><strong>Cell:</strong> <span id="user-cell"></span></p>
+              <p class="mb-1"><strong>DOB:</strong> <span id="user-dob"></span></p>
+              <p class="mb-1"><strong>Gender:</strong> <span id="user-gender"></span></p>
+              <p class="mb-1"><strong>Address:</strong> <span id="user-address"></span></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- buttons to edit, delete, close -->
+          <button id="editUserBtn" class="btn btn-warning">✏️ Edit</button>
+          <button id="deleteUserBtn" class="btn btn-danger">🗑️ Delete</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- our script file -->
   <script src="script.js"></script>
 </body>
 </html>
 
-script.js
+script.js:
 
+// shortcut to get element by id
 const $id = (id) => document.getElementById(id);
 
+// main elements
 const amountInput = $id('amount_input');
 const sortBySelect = $id('sort_by');
 const bodyContainer = $id('body');
 
+// API details
 const apiUrl = 'https://randomuser.me/api/';
 const maxUsers = 1000;
 const minUsers = 0;
 const timeout = 3000;
 
+// where we store all users
 let currentUsers = [];
+// track which user is selected
+let selectedUserIndex = null;
 
+// press enter in input = generate users
 amountInput.addEventListener('keypress', async (event) => {
   if (event.key === 'Enter') {
     event.preventDefault();
@@ -70,10 +119,12 @@ amountInput.addEventListener('keypress', async (event) => {
   }
 });
 
+// when sorting changes, show users again
 sortBySelect.addEventListener('change', () => {
   if (currentUsers.length > 0) renderUsers(currentUsers, sortBySelect.value);
 });
 
+// generate user list
 async function generateUsers() {
   const count = Number(amountInput.value.trim());
   const nameDisplay = sortBySelect.value;
@@ -96,6 +147,7 @@ async function generateUsers() {
   }
 }
 
+// get random users from API
 async function fetchRandomUsers(count) {
   try {
     const response = await fetch(`${apiUrl}?results=${count}`);
@@ -111,13 +163,16 @@ async function fetchRandomUsers(count) {
   }
 }
 
+// show users in rows
 function renderUsers(users, nameDisplay) {
   clearUserRows();
 
-  users.forEach(user => {
+  users.forEach((user, index) => {
     const rowDiv = document.createElement('div');
-    rowDiv.className = 'row mb-2';
+    rowDiv.className = 'row mb-2 user-row';
+    rowDiv.style.cursor = 'pointer';
 
+    // pick first or last name
     const nameCol = document.createElement('div');
     nameCol.className = 'col-md-3 text-center';
     nameCol.textContent = (nameDisplay === 'first_name') ? user.name.first : user.name.last;
@@ -135,15 +190,21 @@ function renderUsers(users, nameDisplay) {
     countryCol.textContent = user.location.country;
 
     rowDiv.append(nameCol, genderCol, emailCol, countryCol);
+
+    // double click opens modal
+    rowDiv.addEventListener('dblclick', () => openUserModal(index));
+
     bodyContainer.appendChild(rowDiv);
   });
 }
 
+// keep users and show them
 function displayNewUsers(users, nameDisplay) {
   currentUsers = users;
   renderUsers(currentUsers, nameDisplay);
 }
 
+// small alert box for info/errors
 function showTempMessage(message, type) {
   clearUserRows();
   const msgDiv = document.createElement('div');
@@ -153,6 +214,7 @@ function showTempMessage(message, type) {
   setTimeout(() => msgDiv.remove(), timeout);
 }
 
+// check if input is okay
 function validateInput(amount) {
   if (Number.isNaN(amount) || amount === '') {
     showTempMessage('Please enter a valid number.', 'danger');
@@ -165,35 +227,98 @@ function validateInput(amount) {
   return true;
 }
 
+// capitalize first letter
 function capitalizeFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// remove all user rows
 function clearUserRows() {
   while (bodyContainer.children.length > 1) {
     bodyContainer.removeChild(bodyContainer.lastChild);
   }
 }
 
+// modal elements
+const userModal = new bootstrap.Modal($id('userModal'));
+const userPicture = $id('user-picture');
+const userFullname = $id('user-fullname');
+const userEmail = $id('user-email');
+const userPhone = $id('user-phone');
+const userCell = $id('user-cell');
+const userDob = $id('user-dob');
+const userGender = $id('user-gender');
+const userAddress = $id('user-address');
+const deleteBtn = $id('deleteUserBtn');
+const editBtn = $id('editUserBtn');
+
+// open modal and show user info
+function openUserModal(index) {
+  selectedUserIndex = index;
+  const user = currentUsers[index];
+
+  userPicture.src = user.picture.large;
+  userFullname.textContent = `${capitalizeFirst(user.name.title)} ${capitalizeFirst(user.name.first)} ${capitalizeFirst(user.name.last)}`;
+  userEmail.textContent = user.email;
+  userPhone.textContent = user.phone;
+  userCell.textContent = user.cell;
+  userDob.textContent = new Date(user.dob.date).toLocaleDateString();
+  userGender.textContent = capitalizeFirst(user.gender);
+  userAddress.textContent = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
+
+  userModal.show();
+}
+
+// delete user
+deleteBtn.addEventListener('click', () => {
+  if (selectedUserIndex !== null) {
+    currentUsers.splice(selectedUserIndex, 1);
+    renderUsers(currentUsers, sortBySelect.value);
+    userModal.hide();
+  }
+});
+
+// edit user
+editBtn.addEventListener('click', () => {
+  if (selectedUserIndex !== null) {
+    const user = currentUsers[selectedUserIndex];
+
+    // basic editing using prompts
+    const newEmail = prompt('Edit Email:', user.email);
+    const newPhone = prompt('Edit Phone:', user.phone);
+    const newCell = prompt('Edit Cell:', user.cell);
+
+    if (newEmail) user.email = newEmail;
+    if (newPhone) user.phone = newPhone;
+    if (newCell) user.cell = newCell;
+
+    renderUsers(currentUsers, sortBySelect.value);
+    openUserModal(selectedUserIndex);
+  }
+});
+
 style.css
 
+/* style for the round input box */
 .pill-input {
   background-color: rgb(243, 243, 243);
   width: 20rem;
   padding: 0.75rem 2rem;
-  border-radius: 50rem;
+  border-radius: 50rem; /* makes it round */
 }
 
+/* style for headers and select box */
 .pill-header,
 .pill-select {
   background-color: rgb(243, 243, 243);
   width: 15rem;
   padding: 0.75rem 2rem;
-  border-radius: 50rem;
+  border-radius: 50rem; /* round again */
   font-weight: 500;
   text-align: center;
 }
 
+/* smaller padding for select box */
 .pill-select {
   padding: 0.5rem 1rem;
 }
