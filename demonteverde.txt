@@ -1,1 +1,507 @@
-sample code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="webdev.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        *{
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        #userCount {
+            width: 300px;
+            text-align: center;
+            border-radius: 50px;
+            transition: transform 0.3s ease-in-out;
+            border: solid 1px;
+        }
+        
+        #userCount:hover {
+            transform: scale(1.05);
+        }
+        
+        .users-header {
+            display: grid;
+            grid-template-columns: 25% 15% 40% 20%;
+            background-color: none;
+            color: white;
+            padding: 16px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .header-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 8px 12px;
+            background-color: #525252;
+            border-radius: 50px;
+            font-weight: 600;
+            min-height: 40px;
+        }
+        
+        .user-row {
+            display: grid;
+            grid-template-columns: 25% 15% 40% 20%;
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-row:hover {
+            background-color: #f7fafc;
+            cursor: pointer;
+        }
+        
+        .name-type-selector {
+            background-color: #525252;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+        
+        .popup-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .user-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 15px;
+            border: 3px solid #f0f0f0;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .alert {
+            margin: 15px;
+        }
+        
+        .popup-user{
+            border: solid;
+            border-width: 1px;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .popup-detail{
+            border: none;
+        }
+                
+        .popup-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .popup-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-edit {
+            background-color: #17ea6f;
+            color: #000;
+        }
+        
+        .btn-delete {
+            background-color: #ff0019;
+            color: white;
+        }
+        
+        .edit-mode .view-mode {
+            display: none;
+        }
+                
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container bg-white shadow rounded overflow-hidden mt-4">
+        <div class="d-flex justify-content-center align-items-center gap-3 p-4 bg-light border-bottom flex-wrap">
+            <div class="d-flex align-items-center gap-2">
+                <input type="number" id="userCount" class="form-control" min="0" max="1000" value="10"
+                placeholder="Input Number of Users (1-1000)">
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="alert alert-danger text-center mx-3 my-2 d-none"></div>
+        
+        <div class="p-3 pb-4">
+            <div class="users-header">
+                <div class="header-item">
+                    <select id="nameTypeSelector" class="name-type-selector">
+                        <option value="first">First Name</option>
+                        <option value="last">Last Name</option>
+                    </select>
+                </div>
+                <div class="header-item">Gender</div>
+                <div class="header-item">Email Address</div>
+                <div class="header-item">Country</div>
+            </div>
+            <div id="usersList">
+                <!-- Displayed Users -->
+            </div>
+        </div>
+    </div>
+
+    <div id="popup">
+        <div class="popup-content">
+            <div class="popup-detail">
+                <h3 class="popup-title">User Details</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <img id="popupUserImage" class="user-img" src="" alt="User">
+
+            <div class="view-mode">
+                <div class="popup-user">
+                    <div class="detail-label">Name:</div>
+                    <div id="popupUserName"></div>
+                </div>
+
+                <div class="popup-user">
+                    <div class="detail-label">Address:</div>
+                    <div id="popupUserAddress"></div>
+                </div>
+
+                <div class="popup-user">
+                    <div class="detail-label">Email:</div>
+                    <div id="popupUserEmail"></div>
+                </div>
+            </div>
+            
+            <div class="edit-mode">
+                <div class="popup-user">
+                    <div class="detail-label">Name:</div>
+                    <input id="editUserName" class="edit-input">
+                </div>
+
+                <div class="popup-user">
+                    <div class="detail-label">Address:</div>
+                    <input id="editUserAddress" class="edit-input">
+                </div>
+
+                <div class="popup-user">
+                    <div class="detail-label">Email:</div>
+                    <input id="editUserEmail" class="edit-input">
+                </div>
+            </div>
+            
+            <div class="popup-actions">
+                <button id="editButton" class="popup-btn btn-edit">Edit</button>
+                <button id="deleteButton" class="popup-btn btn-delete">Delete</button>
+                <button id="saveButton" class="popup-btn btn-edit" style="display: none;">Save</button>
+                <button id="cancelButton" class="popup-btn btn-delete" style="display: none;">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userCountInput = document.getElementById('userCount');
+            const nameTypeSelector = document.getElementById('nameTypeSelector');
+            const usersList = document.getElementById('usersList');
+            const errorMessage = document.getElementById('errorMessage');
+                
+            // Popup elements
+            const popup = document.getElementById('popup');
+            const popupUserName = document.getElementById('popupUserName');
+            const popupUserAddress = document.getElementById('popupUserAddress');
+            const popupUserEmail = document.getElementById('popupUserEmail');
+            const popupUserImage = document.getElementById('popupUserImage');
+            const closeBtn = document.querySelector('.close-btn');
+                
+            // Edit elements
+            const editUserName = document.getElementById('editUserName');
+            const editUserAddress = document.getElementById('editUserAddress');
+            const editUserEmail = document.getElementById('editUserEmail');
+                
+            // Action buttons
+            const editButton = document.getElementById('editButton');
+            const deleteButton = document.getElementById('deleteButton');
+            const saveButton = document.getElementById('saveButton');
+            const cancelButton = document.getElementById('cancelButton');
+                
+            let currentUsers = [];
+            let nameType = 'first';
+            let timeoutId = null;
+            let currentUserIndex = -1;
+                
+            // Change name type
+            nameTypeSelector.addEventListener('change', function() {
+                nameType = this.value;
+                showUsers(currentUsers);
+            });
+
+            // Input event for user count
+            userCountInput.addEventListener('input', function() {
+                clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(function() {
+                    if (userCountInput.value < 0) userCountInput.value = 0;
+                    if (userCountInput.value > 1000) userCountInput.value = 1000;
+                    getUsers();
+                }, 1000);
+            });
+
+            // Close popup
+            closeBtn.addEventListener('click', function() {
+                closePopup();
+            });
+
+            // Close popup if clicked outside
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    closePopup();
+                }
+            });
+
+            // Edit button event
+            editButton.addEventListener('click', function() {
+                enableEditMode();
+            });
+
+            // Delete button event
+            deleteButton.addEventListener('click', function() {
+                deleteUser(currentUserIndex);
+                closePopup();
+            });
+
+            // Save button event
+            saveButton.addEventListener('click', function() {
+                saveUserChanges(currentUserIndex);
+                closePopup();
+            });
+
+            // Cancel button event
+            cancelButton.addEventListener('click', function() {
+                disableEditMode();
+                showUserDetails(currentUsers[currentUserIndex]);
+            });
+
+            function getUsers() {
+                const count = parseInt(userCountInput.value);
+
+                if (isNaN(count) || count < 0 || count > 1000) {
+                    showError('Please enter a number between 0 and 1000');
+                    return;
+                }
+
+                if (count === 0) {
+                    usersList.innerHTML = '';
+                    currentUsers = [];
+                    hideError();
+                    return;
+                }
+
+                hideError();
+
+                fetch('https://randomuser.me/api/?results=' + count + '&nat=us,gb,ca,au')
+                    .then(response => response.json())
+                    .then(data => {
+                        currentUsers = data.results;
+                        showUsers(currentUsers);
+                    })
+                    .catch(error => {
+                        showError('Error loading users. Please try again.');
+                    });
+            }
+
+            function showUsers(users) {
+                usersList.innerHTML = '';
+
+                for (let i = 0; i < users.length; i++) {
+                    const user = users[i];
+                    const name = nameType === 'first' ? user.name.first : user.name.last;
+
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'user-row';
+                    userDiv.setAttribute('data-index', i);
+
+                    userDiv.innerHTML = `
+                        <div>${name}</div>
+                        <div>${user.gender.slice(0,1).toUpperCase() + user.gender.slice(1).toLowerCase()}</div>
+                        <div>${user.email}</div>
+                        <div>${user.location.country}</div>
+                    `;
+
+                    // Add click event to show popup
+                    userDiv.addEventListener('click', function() {
+                        currentUserIndex = i;
+                        showPopup(user);
+                    });
+
+                    usersList.appendChild(userDiv);
+                }
+            }
+
+            function showPopup(user) {
+                showUserDetails(user);
+                disableEditMode();
+                popup.style.display = 'flex';
+            }
+
+            function showUserDetails(user) {
+                const address = 
+                    user.location.street.number + ' ' + 
+                    user.location.street.name + ', ' + 
+                    user.location.city + ', ' + 
+                    user.location.state + ' ' + 
+                    user.location.postcode + ', ' + 
+                    user.location.country;
+
+                popupUserName.textContent = user.name.title + ' ' + user.name.first + ' ' + user.name.last;
+                popupUserAddress.textContent = address;
+                popupUserEmail.textContent = user.email;
+                popupUserImage.src = user.picture.large;
+
+                // Set edit values
+                editUserName.value = user.name.title + ' ' + user.name.first + ' ' + user.name.last;
+                editUserAddress.value = address;
+                editUserEmail.value = user.email;
+            }
+
+            function closePopup() {
+                popup.style.display = 'none';
+                disableEditMode();
+            }
+
+            function enableEditMode() {
+                popup.querySelector('.view-mode').style.display = 'none';
+                popup.querySelector('.edit-mode').style.display = 'block';
+                editButton.style.display = 'none';
+                deleteButton.style.display = 'none';
+                saveButton.style.display = 'block';
+                cancelButton.style.display = 'block';
+            }
+
+            function disableEditMode() {
+                popup.querySelector('.view-mode').style.display = 'block';
+                popup.querySelector('.edit-mode').style.display = 'none';
+                editButton.style.display = 'block';
+                deleteButton.style.display = 'block';
+                saveButton.style.display = 'none';
+                cancelButton.style.display = 'none';
+            }
+
+            function deleteUser(index) {
+                currentUsers.splice(index, 1);
+                showUsers(currentUsers);
+            }
+
+            function saveUserChanges(index) {
+                const user = currentUsers[index];
+
+                // Parse the edited name
+                const editedName = editUserName.value.split(' ');
+                if(editedName.length === 1){
+                    user.name.first = editedName[0]
+                }
+                if (editedName.length >= 3) {
+                    user.name.title = editedName[0];
+                    user.name.first = editedName[1];
+                    user.name.last = editedName.slice(2).join(' ');
+                } else if (editedName.length === 2) {
+                    user.name.first = editedName[0];
+                    user.name.last = editedName[1];
+                }
+
+                user.email = editUserEmail.value;
+
+                showUsers(currentUsers);
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('d-none');
+            }
+
+            function hideError() {
+                errorMessage.classList.add('d-none');
+            }
+
+            getUsers();
+        });
+    </script>
+</body>
+</html>
