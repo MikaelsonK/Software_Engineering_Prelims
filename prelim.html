@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="prelim.css"> 
+    <script src="prelim.js"> </script>
+</head>
+
+<body>
+<!-- site  -->
+  <div class="container">
+    <header id="headerBox">
+      <h1>Red's Random User Generator</h1>
+    </header>
+    <div class="error" id="errorMessage"></div>
+    <div class="search-container">
+      <input type="number" id="userCount" min="0" max="1000" placeholder="Enter number of random users (0-1000)">
+      <button id="generateBtn">Generate Users</button>
+    </div>
+  
+    <div class="table-container">
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>
+              <div class="name-header">
+                Name
+                <select id="nameFormat">
+                  <option value="first">First</option>
+                  <option value="last">Last</option>
+                </select>
+              </div>
+            </th>
+            <th>Gender</th>
+            <th>Email Address</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody">
+          <tr>
+            <td colspan="4">
+              <div class="loading">Loading users...</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<!-- modals  -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">User Info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      
+      
+      <div class="modal-body" id="viewMode">
+  <!-- Centered Image -->
+  <div class="text-center mb-3">
+    <img id="modalPicture" src="" 
+        class="img-fluid rounded-circle" 
+        style="width:120px;height:120px;object-fit:cover;">
+  </div>
+
+    <div class="text-start mt-3">
+        <h5 id="modalName"></h5>
+        <p><strong>Address:</strong> <span id="modalAddress"></span></p>
+        <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+        <p><strong>Telephone:</strong> <span id="modalPhone"></span></p>
+        <p><strong>Cellphone:</strong> <span id="modalCell"></span></p>
+        <p><strong>Date of Birth:</strong> <span id="modalDob"></span></p>
+        <p><strong>Gender:</strong> <span id="modalGender"></span></p>
+    </div>
+    </div>
+
+
+      <div class="modal-body" id="editMode" style="display:none;">
+        <form id="editForm">
+          <input type="text" id="editName" class="form-control mb-2" placeholder="Full Name">
+          <input type="text" id="editAddress" class="form-control mb-2" placeholder="Complete Address">
+          <input type="email" id="editEmail" class="form-control mb-2" placeholder="Email">
+          <input type="text" id="editPhone" class="form-control mb-2" placeholder="Telephone Number">
+          <input type="text" id="editCell" class="form-control mb-2" placeholder="Cellphone Number">
+          <input type="date" id="editDob" class="form-control mb-2">
+          <select id="editGender" class="form-control mb-2">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </form>
+        
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="deleteUserBtn">Delete</button>
+        <button type="button" class="btn btn-warning" id="editUserBtn">Edit</button>
+        <button type="button" class="btn btn-success" id="saveUserBtn" style="display:none;"> Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- bg video  -->
+  <div class="video-bg">
+    <video autoplay muted loop>
+      <source src="Social Media Network Animation -  4K Social Media Background Video Green Screen copy.mp4" type="video/mp4">
+    </video>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
