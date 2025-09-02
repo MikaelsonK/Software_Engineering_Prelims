@@ -13,5 +13,3 @@ Please make sure to read the instructions provided to you and follow the require
 - Do not remove or edit this README file.  
 
 Good luck, and happy coding! 🚀
-
-Good evening, ma’am. To clarify, I’m currently using Mr. Sasa’s laptop since mine is experiencing issues and is currently under repair.
