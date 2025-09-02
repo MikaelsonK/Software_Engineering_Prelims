@@ -1,12 +1,14 @@
 let usersData = [];
 let currentEditIndex = -1;
 
+// for errors
 function showError(message) {
     document.getElementById("errorModalBody").innerText = message;
     const modal = new bootstrap.Modal(document.getElementById("errorModal"));
     modal.show();
 }
 
+// fetch users and displays it in a table
 function fetchUsers() {
     const count = parseInt(document.getElementById("randomUserNumber").value);
 
@@ -32,6 +34,7 @@ function fetchUsers() {
         });
 }
 
+// display the table of the random users
 function displayUsers() {
     const nameSelect = document.getElementById("name").value;
     let html = "";
@@ -59,6 +62,7 @@ function displayUsers() {
     });
 }
 
+// displays a modal with the users full info
 function showUser(index) {
     const user = usersData[index];
     currentEditIndex = index;
