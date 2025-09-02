@@ -17,12 +17,7 @@
             width: 300px;
             text-align: center;
             border-radius: 50px;
-            transition: transform 0.3s ease-in-out;
             border: solid 1px;
-        }
-        
-        #userCount:hover {
-            transform: scale(1.05);
         }
         
         .users-header {
@@ -58,11 +53,6 @@
             gap: 10px;
         }
         
-        .user-row:hover {
-            background-color: #f7fafc;
-            cursor: pointer;
-        }
-        
         .name-type-selector {
             background-color: #525252;
             color: white;
@@ -72,53 +62,6 @@
             cursor: pointer;
             font-weight: 600;
             position: relative;
-        }
-        
-        #popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .popup-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        }
-        
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-        }
-        
-        .popup-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #777;
         }
         
         .user-img {
@@ -166,12 +109,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .popup-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .btn-edit {
@@ -195,11 +132,34 @@
             border-radius: 4px;
             margin-bottom: 8px;
         }
+        
+        /* Modal custom styling */
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #eee;
+            padding: 15px 25px;
+        }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container bg-white shadow rounded overflow-hidden mt-4">
-        <div class="d-flex justify-content-center align-items-center gap-3 p-4 bg-light border-bottom flex-wrap">
+<body class="bg-white">
+    <div class="container bg-white overflow-hidden mt-4">
+        <div class="d-flex justify-content-center">
+            <h1>Lance Jerson's Random User Generator</h1>
+        </div>
+        <div class="bg-white d-flex justify-content-center align-items-center gap-3 p-4 bg-light flex-wrap">
             <div class="d-flex align-items-center gap-2">
                 <input type="number" id="userCount" class="form-control" min="0" max="1000" value="10"
                 placeholder="Input Number of Users (1-1000)">
@@ -226,56 +186,65 @@
         </div>
     </div>
 
-    <div id="popup">
-        <div class="popup-content">
-            <div class="popup-detail">
-                <h3 class="popup-title">User Details</h3>
-                <button class="close-btn">&times;</button>
-            </div>
-            <img id="popupUserImage" class="user-img" src="" alt="User">
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-white border-bottom-none">
+                    <h5 class="modal-title" id="userModalLabel">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalUserImage" class="user-img" src="" alt="User">
 
-            <div class="view-mode">
-                <div class="popup-user">
-                    <div class="detail-label">Name:</div>
-                    <div id="popupUserName"></div>
-                </div>
+                    <div class="view-mode">
+                        <div class="popup-user">
+                            <div class="detail-label">Name:</div>
+                            <div id="modalUserName"></div>
+                        </div>
 
-                <div class="popup-user">
-                    <div class="detail-label">Address:</div>
-                    <div id="popupUserAddress"></div>
-                </div>
+                        <div class="popup-user">
+                            <div class="detail-label">Address:</div>
+                            <div id="modalUserAddress"></div>
+                        </div>
 
-                <div class="popup-user">
-                    <div class="detail-label">Email:</div>
-                    <div id="popupUserEmail"></div>
-                </div>
-            </div>
-            
-            <div class="edit-mode">
-                <div class="popup-user">
-                    <div class="detail-label">Name:</div>
-                    <input id="editUserName" class="edit-input">
-                </div>
+                        <div class="popup-user">
+                            <div class="detail-label">Email:</div>
+                            <div id="modalUserEmail"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="edit-mode" style="display: none;">
+                        <div class="popup-user">
+                            <div class="detail-label">Name:</div>
+                            <input id="editUserName" class="edit-input">
+                        </div>
 
-                <div class="popup-user">
-                    <div class="detail-label">Address:</div>
-                    <input id="editUserAddress" class="edit-input">
-                </div>
+                        <div class="popup-user">
+                            <div class="detail-label">Address:</div>
+                            <input id="editUserAddress" class="edit-input">
+                        </div>
 
-                <div class="popup-user">
-                    <div class="detail-label">Email:</div>
-                    <input id="editUserEmail" class="edit-input">
+                        <div class="popup-user">
+                            <div class="detail-label">Email:</div>
+                            <input id="editUserEmail" class="edit-input">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="popup-actions">
-                <button id="editButton" class="popup-btn btn-edit">Edit</button>
-                <button id="deleteButton" class="popup-btn btn-delete">Delete</button>
-                <button id="saveButton" class="popup-btn btn-edit" style="display: none;">Save</button>
-                <button id="cancelButton" class="popup-btn btn-delete" style="display: none;">Cancel</button>
+                <div class="modal-footer">
+                    <div class="popup-actions w-100">
+                        <button id="editButton" class="popup-btn btn-edit">Edit</button>
+                        <button id="deleteButton" class="popup-btn btn-delete">Delete</button>
+                        <button id="saveButton" class="popup-btn btn-edit" style="display: none;">Save</button>
+                        <button id="cancelButton" class="popup-btn btn-delete" style="display: none;">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const userCountInput = document.getElementById('userCount');
@@ -283,13 +252,12 @@
             const usersList = document.getElementById('usersList');
             const errorMessage = document.getElementById('errorMessage');
                 
-            // Popup elements
-            const popup = document.getElementById('popup');
-            const popupUserName = document.getElementById('popupUserName');
-            const popupUserAddress = document.getElementById('popupUserAddress');
-            const popupUserEmail = document.getElementById('popupUserEmail');
-            const popupUserImage = document.getElementById('popupUserImage');
-            const closeBtn = document.querySelector('.close-btn');
+            // Modal elements
+            const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+            const modalUserName = document.getElementById('modalUserName');
+            const modalUserAddress = document.getElementById('modalUserAddress');
+            const modalUserEmail = document.getElementById('modalUserEmail');
+            const modalUserImage = document.getElementById('modalUserImage');
                 
             // Edit elements
             const editUserName = document.getElementById('editUserName');
@@ -324,18 +292,6 @@
                 }, 1000);
             });
 
-            // Close popup
-            closeBtn.addEventListener('click', function() {
-                closePopup();
-            });
-
-            // Close popup if clicked outside
-            popup.addEventListener('click', function(e) {
-                if (e.target === popup) {
-                    closePopup();
-                }
-            });
-
             // Edit button event
             editButton.addEventListener('click', function() {
                 enableEditMode();
@@ -344,13 +300,13 @@
             // Delete button event
             deleteButton.addEventListener('click', function() {
                 deleteUser(currentUserIndex);
-                closePopup();
+                userModal.hide();
             });
 
             // Save button event
             saveButton.addEventListener('click', function() {
                 saveUserChanges(currentUserIndex);
-                closePopup();
+                userModal.hide();
             });
 
             // Cancel button event
@@ -405,20 +361,15 @@
                         <div>${user.location.country}</div>
                     `;
 
-                    // Add click event to show popup
+                    // Add click event to show modal
                     userDiv.addEventListener('click', function() {
                         currentUserIndex = i;
-                        showPopup(user);
+                        showUserDetails(user);
+                        userModal.show();
                     });
 
                     usersList.appendChild(userDiv);
                 }
-            }
-
-            function showPopup(user) {
-                showUserDetails(user);
-                disableEditMode();
-                popup.style.display = 'flex';
             }
 
             function showUserDetails(user) {
@@ -430,25 +381,23 @@
                     user.location.postcode + ', ' + 
                     user.location.country;
 
-                popupUserName.textContent = user.name.title + ' ' + user.name.first + ' ' + user.name.last;
-                popupUserAddress.textContent = address;
-                popupUserEmail.textContent = user.email;
-                popupUserImage.src = user.picture.large;
+                modalUserName.textContent = user.name.title + ' ' + user.name.first + ' ' + user.name.last;
+                modalUserAddress.textContent = address;
+                modalUserEmail.textContent = user.email;
+                modalUserImage.src = user.picture.large;
 
                 // Set edit values
                 editUserName.value = user.name.title + ' ' + user.name.first + ' ' + user.name.last;
                 editUserAddress.value = address;
                 editUserEmail.value = user.email;
-            }
-
-            function closePopup() {
-                popup.style.display = 'none';
+                
+                // Reset to view mode when showing details
                 disableEditMode();
             }
 
             function enableEditMode() {
-                popup.querySelector('.view-mode').style.display = 'none';
-                popup.querySelector('.edit-mode').style.display = 'block';
+                document.querySelector('.view-mode').style.display = 'none';
+                document.querySelector('.edit-mode').style.display = 'block';
                 editButton.style.display = 'none';
                 deleteButton.style.display = 'none';
                 saveButton.style.display = 'block';
@@ -456,8 +405,8 @@
             }
 
             function disableEditMode() {
-                popup.querySelector('.view-mode').style.display = 'block';
-                popup.querySelector('.edit-mode').style.display = 'none';
+                document.querySelector('.view-mode').style.display = 'block';
+                document.querySelector('.edit-mode').style.display = 'none';
                 editButton.style.display = 'block';
                 deleteButton.style.display = 'block';
                 saveButton.style.display = 'none';
