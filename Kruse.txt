@@ -1,0 +1,129 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Random User Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container d-flex flex-column align-items-center justify-content-between overflow-hidden mt-5 gap-">
+        <input type="number" id="numUsers" class="form-control w-50 rounded-pill text-center bg-light border-1 shadow-sm mt-5" placeholder="Enter a number of random users" value="" min="0" max="1000" style="height: 50px">
+        <div id="headercontainer" class="d-flex justify-content-between rounded-pill align-items-center gap-5 mt-5 w-75">
+            <div class="header_item bg-light shadow-sm">
+                <select class="form-select bg-light border-0 " id="nameSelector">
+                    <option value="first">First name</option>
+                    <option value="last">Last Name</option>
+                </select>
+            </div>
+            <div class="header_item bg-light shadow-sm">Gender</div>
+            <div class="header_item bg-light shadow-sm" >Email Address</div>
+            <div class="header_item bg-light shadow-sm">Country</div>
+        </div>
+        <div id="errorAlert" class="alert alert-danger d-none mt-3 w-50 text-center"></div>
+        <div id="userContainer" class="mt-4 w-75"></div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
+javascript
+const numUsers = document.getElementById('numUsers')
+const typeName = document.getElementById('nameSelector')
+const errorAlert = document.getElementById('errorAlert')
+const userContainer = document.getElementById('userContainer')
+
+let userData = [];
+
+numUsers.addEventListener('change', fetchUsers);
+typeName.addEventListener('change', () => displayUsers(userData));
+
+async function fetchUsers() {
+    const count = Number(numUsers.value)
+   
+    if (!count || count <= 0 || count > 1000) {
+    showError("Please enter a valid number of users between 0-1000")
+    return;
+    }
+    hideError();
+    userContainer.innerHTML = '<div class="text-center mt-3">Finding users...';
+    const timeoutId = setTimeout(() => {
+        showError("Check on your Internet, the request took too long.");
+    }, 20000);
+
+    fetch(`https://randomuser.me/api/?results=${count}`)
+        .then(response => {
+            if (!response.ok) {
+                clearTimeout(timeoutId);
+                throw new Error(`API error: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            clearTimeout(timeoutId);
+            userData = data.results
+            displayUsers(userData);
+        })
+        .catch(error=> {
+            clearTimeout(timeoutId);
+            showError(`Failed to fetch users: ${error.message}`);
+            console.error(`Fetch error:`, error);
+        })
+}
+
+function showError(message) {
+    if (errorAlert) {
+    errorAlert.textContent = message;
+    errorAlert.classList.remove('d-none');
+    errorAlert.classList.add('alert', 'alert-danger', 'mt-3');
+
+    }
+}
+
+function hideError() {
+    errorAlert.classList.add('d-none'); 
+    errorAlert.classList.remove('alert', 'alert-danger', 'mt-3');
+}
+
+function displayUsers(users) {
+    if (!users || users.length === 0){
+        userContainer.innerHTML = '<div class="text-center"> No users found </div>';
+        return;
+    }
+    const nameType = typeName.value || 'first';
+
+    const usersHTML = users.map(user => {
+        let displayName;
+        switch(nameType) {
+            case 'first':
+                displayName = user.name.first;
+                break;
+            case 'last':
+                displayName = user.name.last;
+                break;
+            default:
+                displayName = `${user.name.first}`;
+        }
+        
+        return `
+            <div class="d-flex justify-content-between align-items-center bg-light shadow-sm rounded-pill p-3 mb-2">
+                <div class="text-center" style="flex: 1">${displayName}</div>
+                <div class="text-center" style="flex: 1">${user.gender}</div>
+                <div class="text-center" style="flex: 1">${user.email}</div>
+                <div class="text-center" style="flex: 1">${user.location.country}</div>
+            </div>
+        `;
+    }).join('');
+    userContainer.innerHTML = usersHTML;
+}
+css
+.header_item {
+    text-align: center;
+    border: 1px;
+    flex: 1;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+}
