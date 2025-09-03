@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random User Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="input-container">
+            <input type="number" id="userCount" min="1" max="1000" placeholder="Enter number of random users">
+        </div>
+        
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generating random users...</p>
+        </div>
+
+        <div class="results-container">
+            <div class="results-grid">
+                <div class="results-header name-header">
+                    <select id="nameDisplay">
+                        <option value="first">First Name</option>
+                        <option value="last">Last Name</option>
+                    </select>
+                </div>
+                <div class="results-header">Gender</div>
+                <div class="results-header">Email Address</div>
+                <div class="results-header">Country</div>
+            </div>
+            
+            <div id="usersData" class="results-grid">
+            </div>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="user-card">
+                <div class="user-avatar">
+                    <img id="modalPicture" src="" alt="User Picture">
+                </div>
+                <div class="user-name" id="modalName"></div>
+                <div class="user-info">
+                    <div class="info-item">
+                        <span class="info-label">Address</span>
+                        <span class="info-value" id="modalAddress"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="modalEmail"></span>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button id="editBtn" class="btn edit-btn">Edit</button>
+                    <button id="deleteBtn" class="btn delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content edit-modal-content">
+            <span class="close-edit">&times;</span>
+            <h2>Edit User</h2>
+            <div class="edit-form">
+                <div class="form-row">
+                    <label>First Name:</label>
+                    <input type="text" id="editFirstName">
+                </div>
+                <div class="form-row">
+                    <label>Last Name:</label>
+                    <input type="text" id="editLastName">
+                </div>
+                <div class="form-row">
+                    <label>Email:</label>
+                    <input type="email" id="editEmail">
+                </div>
+                <div class="form-row">
+                    <label>Phone:</label>
+                    <input type="text" id="editPhone">
+                </div>
+                <div class="form-row">
+                    <label>Cell:</label>
+                    <input type="text" id="editCell">
+                </div>
+                <div class="form-row">
+                    <label>Gender:</label>
+                    <select id="editGender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveBtn" class="btn save-btn">Save</button>
+                <button id="cancelBtn" class="btn cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

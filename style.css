@@ -1,0 +1,369 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #ffffff;
+    padding: 20px;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    background-color: rgba(13, 17, 23, 0.1);
+    border: none;
+    border-radius: 20px;
+    color: #333;
+    font-size: 14px;
+    text-align: center;
+}
+
+input[type="number"]::placeholder {
+    color: #666;
+}
+
+.results-container {
+    margin-top: 20px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.results-header {
+    background-color: rgba(13, 17, 23, 0.1);
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.name-header {
+    padding: 0;
+    overflow: hidden;
+}
+
+.name-header select {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+}
+
+.name-header select:focus {
+    outline: none;
+}
+
+.result-cell {
+    background-color: rgba(13, 17, 23, 0.1);
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.error {
+    background-color: rgba(248, 81, 73, 0.1);
+    color: #d73a49;
+    padding: 12px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.spinner {
+    border: 2px solid rgba(13, 17, 23, 0.1);
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.user-row {
+    display: contents;
+    cursor: pointer;
+}
+
+.user-row:hover .result-cell {
+    background-color: rgba(13, 17, 23, 0.2);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #999;
+    margin: 10% auto;
+    padding: 0;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 350px;
+    position: relative;
+    overflow: hidden;
+}
+
+.close, .close-edit {
+    color: white;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close:hover, .close-edit:hover {
+    color: #ddd;
+}
+
+.user-card {
+    padding: 40px 20px 20px;
+    text-align: center;
+    color: white;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    overflow: hidden;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.user-info {
+    text-align: left;
+}
+
+.info-item {
+    background-color: white;
+    border-radius: 25px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.edit-modal-content {
+    max-width: 500px;
+}
+
+.edit-form {
+    margin: 20px 0;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-row input,
+.form-row select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.close-edit {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-edit:hover,
+.close-edit:focus {
+    color: black;
+    text-decoration: none;
+}
+
+
+
+@media (max-width: 600px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .results-header {
+        display: none;
+    }
+    
+    .result-cell {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .result-cell::before {
+        content: attr(data-label);
+        font-weight: bold;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 15% auto;
+    }
+}
