@@ -78,6 +78,18 @@ h1 {
   transition: all 0.3s ease;       /* Smooth hover effects */
 }
 
+.detail-pill {
+  background-color: #e8e807; /* yellow pill */
+  color: #000;               /* black text for contrast */
+  padding: 10px 20px;
+  border-radius: 50px;       /* pill shape */
+  margin: 8px auto;          /* space between pills */
+  font-weight: 500;
+  text-align: left;          /* align text nicely */
+  width: 80%;                /* not full width, but centered */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* subtle shadow */
+}
+
 /* Makes sure the user image in the modal looks good */
 #modalUserImage {
   max-height: 200px;      /* Limits image height */
@@ -100,6 +112,7 @@ h1 {
 
 
 -------------------------------JAVASCRIPT-------------------------------------
+
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -343,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
 ---------------------------------------------------HTML---------------------------------------------------------
 
 
-<
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -404,63 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <!-- User Modal -->
-  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalUserName">User Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img id="modalUserImage" src="" alt="User Image" class="img-fluid rounded mb-3">
-            </div>
-            <div class="col-md-8">
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Full Name:</div>
-                <div class="col-sm-8" id="modalUserFullName"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Address:</div>
-                <div class="col-sm-8" id="modalUserAddress"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Email:</div>
-                <div class="col-sm-8" id="modalUserEmail"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Phone:</div>
-                <div class="col-sm-8" id="modalUserPhone"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Cell:</div>
-                <div class="col-sm-8" id="modalUserCell"></div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-sm-4 fw-bold">Date of Birth:</div>
-                <div class="col-sm-8" id="modalUserDob"></div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4 fw-bold">Gender:</div>
-                <div class="col-sm-8" id="modalUserGender"></div>
-              </div>
-          
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" id="modalDeleteBtn">
-            <span class="d-none d-md-inline">Delete</span> 🗑️
-          </button>
-          <button type="button" class="btn btn-primary" id="modalEditBtn">
-            <span class="d-none d-md-inline">Edit</span> ✏️
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true"> <div class="modal-dialog modal-lg"> <div class="modal-content"> <!-- Top bar of the modal --> <div class="modal-header"> <h5 class="modal-title" id="modalUserName">User Details</h5> <!-- Close button (X) --> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> </div> <!-- Main body of the modal --> <div class="modal-body text-center"> <!-- Profile Image --> <img id="modalUserImage" src="" alt="User Image" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e8e807;; padding: 3px;"> <!-- Pills for user details --> <div class="detail-pill"><strong>Full Name:</strong> <span id="modalUserFullName"></span></div> <div class="detail-pill"><strong>Address:</strong> <span id="modalUserAddress"></span></div> <div class="detail-pill"><strong>Email:</strong> <span id="modalUserEmail"></span></div> <div class="detail-pill"><strong>Phone:</strong> <span id="modalUserPhone"></span></div> <div class="detail-pill"><strong>Cell:</strong> <span id="modalUserCell"></span></div> <div class="detail-pill"><strong>Date of Birth:</strong> <span id="modalUserDob"></span></div> <div class="detail-pill"><strong>Gender:</strong> <span id="modalUserGender"></span></div> </div> <!-- Bottom buttons --> <div class="modal-footer"> <!-- Delete button --> <button type="button" class="btn btn-danger" id="modalDeleteBtn"> <span class="d-none d-md-inline">Delete</span> 🗑️ </button> <!-- Edit button --> <button type="button" class="btn btn-primary" id="modalEditBtn"> <span class="d-none d-md-inline">Edit</span> ✏️ </button> </div> </div> </div> </div>
   <!-- Edit User Modal -->
   <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
