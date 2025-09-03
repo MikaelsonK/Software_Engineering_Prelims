@@ -1,6 +1,6 @@
 body {
   background-color: #f8f9fa;
-  color: #212529;
+  color: #06041ab7;
   font-family: Arial, sans-serif;
 }
 
@@ -19,12 +19,16 @@ table {
   overflow: hidden;
 }
 
+.table-dark {
+  background-color: #2f1fe0b7;
+}
+
 .user-img {
   width: 150px;
   height: 150px;
   object-fit: cover;
   border: 5px solid #f8f9fa;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-content {
@@ -50,7 +54,7 @@ table {
 
 .table-hover tbody tr:hover {
   cursor: pointer;
-  background-color: rgba(140, 6, 167, 0.1);
+  background-color: rgba(38, 0, 255, 0.959);
 }
 
 .action-buttons .btn {
