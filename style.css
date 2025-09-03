@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background: #fce4ec; 
+    background: #bf62f0f0; 
     margin: 0;
     padding: 0;
     display: flex;
@@ -19,7 +19,7 @@ body {
   }
   
   h2 {
-    color: #ad1457; 
+    color: #890ecbf0; 
     margin-bottom: 20px;
     font-weight: bold;
   }
@@ -44,7 +44,7 @@ body {
   
   button {
     padding: 12px 24px;
-    background: #f8bbd0; 
+    background: #bf62f0f0; 
     color: #4a2c2a;
     border: none;
     border-radius: 8px;
@@ -53,7 +53,7 @@ body {
   }
 
   button:hover {
-    background: #f48fb1; 
+    background: #bf62f0f0; 
   }
   
   table {
@@ -70,7 +70,7 @@ body {
   }
   
   th {
-    background: #fce4ec; 
+    background: #cc8fedf0; 
   }
   
   
@@ -78,17 +78,17 @@ body {
     width: 100%;
     padding: 6px;
     border: none;
-    background: #fce4ec;
+    background: #cc8fedf0;
     font-size: 14px;
     text-align: center;
   }
   
   th select:hover {
-    background-color: #f8bbd0;
+    background-color: #cc8fedf0;
   }
   
   #errorMsg {
-    color: #d81b60;
+    color: #890ecbf0;
     text-align: center;
     margin-top: 10px;
     font-weight: bold;
@@ -134,7 +134,7 @@ body {
   .modal-field label {
     font-weight: bold;
     margin-bottom: 5px;
-    color: #ad1457;
+    color: #890ecbf0;
   }
 
   .modal-content input,
@@ -170,8 +170,8 @@ body {
     border-radius: 6px;
   }
 
-  #editUser { background: #f8bbd0; }
-  #editUser:hover { background: #f48fb1; }
+  #editUser { background: #cc8fedf0; }
+  #editUser:hover { background: #bf62f0f0; }
 
   #deleteUser { background: #ef5350; color: white; }
   #deleteUser:hover { background: #e53935; }
