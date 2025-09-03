@@ -33,8 +33,8 @@ let modalEmail = document.getElementById("modalEmail");
 let modalPhone = document.getElementById("modalPhone");
 let modalDob = document.getElementById("modalDob");
 let modalGender = document.getElementById("modalGender");
-let editBtn = document.getElementById("editUser");
 let deleteBtn = document.getElementById("deleteUser");
+let saveBtn = document.getElementById("saveUser");
 
 let currentUserIndex = null;
 
@@ -43,8 +43,8 @@ function displayUsers() {
   const nameType = nameTypeSelect.value;
 
   usersData.forEach((user, index) => {
-  let row = document.createElement("tr");
-  row.setAttribute("data-index", index);
+    let row = document.createElement("tr");
+    row.setAttribute("data-index", index);
 
   let nameCell = document.createElement("td");
   nameCell.textContent = nameType === "first" ? user.name.first : user.name.last;
@@ -75,20 +75,18 @@ function displayUsers() {
 
 
 function openModal(user) {
-modalImg.src = user.picture.large;
-modalName.textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
-modalAddress.textContent = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}`;
-modalEmail.textContent = `Email: ${user.email}`;
-modalPhone.textContent = `Phone: ${user.phone}`;
-modalDob.textContent = `DOB: ${new Date(user.dob.date).toLocaleDateString()}`;
-modalGender.textContent = `Gender: ${user.gender}`;
-modal.style.display = "flex";
+  modalImg.src = user.picture.large;
+  modalName.value = `${user.name.title} ${user.name.first} ${user.name.last}`;
+  modalAddress.value = user.fullAddress || `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}`;
+  modalEmail.value = user.email;
+  modalPhone.value = user.phone;
+  modalDob.value = new Date(user.dob.date).toISOString().split("T")[0];
+  modalGender.value = user.gender.toLowerCase();
+  modal.style.display = "flex";
 }
 
 
 closeModal.onclick = () => modal.style.display = "none";
-window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
-
 
 deleteBtn.onclick = () => {
 if (currentUserIndex !== null) {
@@ -98,42 +96,43 @@ if (currentUserIndex !== null) {
 }
 };
 
+saveBtn.onclick = () => {
+  if (currentUserIndex  !== null) {
+    let user = usersData[currentUserIndex];
 
-editBtn.onclick = () => {
-if (currentUserIndex !== null) {
-  let newName = prompt("Enter new first name:", usersData[currentUserIndex].name.first);
-  if (newName) {
-    usersData[currentUserIndex].name.first = newName;
+    let nameParts = modalName.value.trim().split(" ");
+    user.name.title = nameParts[0] || "";
+    user.name.first = nameParts[1] || "";
+    user.name.last = nameParts.slice(2).join(" ") || "";
+
+    user.fullAddress = modalAddress.value;
+    user.email = modalEmail.value;
+    user.phone = modalPhone.value;
+    user.dob.date = new Date(modalDob.value).toISOString();
+    user.gender = modalGender.value;
+
     displayUsers();
-    openModal(usersData[currentUserIndex]); 
+    modal.style.display = "none";
   }
-}
 };
 
-fetchBtn.addEventListener("click", function () {
+fetchBtn.addEventListener("click", () => {
   const count = parseInt(userCountInput.value);
 
-  if (isNaN(count) || count < 0 || count > 1000) {
-    errorMsg.textContent = "Please enter a number from 0 to 1000";
-    return;
-  }
-
-  if (count === 0) {
-    usersData = [];
-    displayUsers();
-    errorMsg.textContent = "No users to display";
+  if (isNaN(count) || count < 1 || count > 1000) {
+    errorMsg.textContent = "Please enter a number from 1 to 1000";
     return;
   }
 
   errorMsg.textContent = "Loading...";
 
   fetchUsers(count)
-    .then(function (users) {
+    .then(users => {
       usersData = users;
       displayUsers();
       errorMsg.textContent = "";
     })
-    .catch(function (err) {
+    .catch(err => {
       errorMsg.textContent = err;
     });
 });
