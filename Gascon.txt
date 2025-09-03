@@ -88,6 +88,8 @@ h1 {
 #modalDeleteBtn, #modalEditBtn {
   min-width: 90px;        /* Minimum width for buttons */
 } 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -98,224 +100,237 @@ h1 {
 
 
 -------------------------------JAVASCRIPT-------------------------------------
-// Wait for DOM to be fully loaded before executing
-document.addEventListener('DOMContentLoaded', function() {
-  // All your existing JavaScript code here
-  // (wrap everything inside this event listener)
-  
+
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function () {
   const userCountInput = document.getElementById('userCount');
   const nameTypeSelect = document.getElementById('nameType');
-  // ... rest of your code
+  const generateBtn = document.getElementById('generateBtn');
+  const userList = document.getElementById('userList');
+  const errorAlert = document.getElementById('errorAlert');
+  const loading = document.getElementById('loading');
+
+  let allUsers = []; // store fetched users like just a basket
+  let currentlySelectedUserIndex = -1;
+
+  const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+  const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+
+  // Prevent form submission reload
+  document.getElementById('editUserForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+  });
+
+  generateBtn.addEventListener('click', fetchUsers);
+  nameTypeSelect.addEventListener('change', updateHowNamesAreShown);
+  document.getElementById('modalDeleteBtn').addEventListener('click', removeUser);
+  document.getElementById('modalEditBtn').addEventListener('click', showEditForm);
+  document.getElementById('saveChangesBtn').addEventListener('click', updateUserInfo);
+
+  // Fetch random users
+  async function fetchUsers() {
+    const numberOfUsers = parseInt(userCountInput.value);
+
+    if (isNaN(numberOfUsers) || numberOfUsers < 1 || numberOfUsers > 1000) {
+      showMessage('Please enter a number between 1 and 1000', true);
+      return;
+    }
+
+    showLoadingState(true);
+    hideErrorMessage();
+    userList.innerHTML = '';
+
+    try {
+      const response = await fetch(`https://randomuser.me/api/?results=${numberOfUsers}`);
+      if (!response.ok) throw new Error('API error');
+
+      const userData = await response.json();
+      allUsers = userData.results;
+      displayUsers(allUsers);
+    } catch (error) {
+      showMessage("Couldn't get users right now. Please try again.", true);
+    } finally {
+      showLoadingState(false);
+    }
+  }
+
+  // Display users in list
+  function displayUsers(users) {
+    userList.innerHTML = '';
+    const nameDisplayStyle = nameTypeSelect.value;
+
+    users.forEach((user, index) => {
+      const displayName = nameDisplayStyle === 'first' ? user.name.first : user.name.last;
+
+      const userRow = document.createElement('div');
+      userRow.className = 'row user-row text-center align-items-center';
+      userRow.setAttribute('data-index', index);
+
+      userRow.addEventListener('dblclick', () => {
+        showUserDetails(index);
+      });
+
+      userRow.innerHTML = `
+        <div class="col-md-3">${displayName}</div>
+        <div class="col-md-2">${capitalizeFirstLetter(user.gender)}</div>
+        <div class="col-md-4 text-truncate" title="${user.email}">${user.email}</div>
+        <div class="col-md-3">${user.location.country}</div>
+      `;
+
+      userList.appendChild(userRow);
+    });
+  }
+
+  // Show user details in the modal
+  function showUserDetails(index) {
+    currentlySelectedUserIndex = index;
+    const user = allUsers[index];
+
+    document.getElementById('modalUserImage').src = user.picture.large;
+    document.getElementById('modalUserFullName').textContent =
+      `${user.name.title} ${user.name.first} ${user.name.last}`;
+    document.getElementById('modalUserEmail').textContent = user.email;
+    document.getElementById('modalUserPhone').textContent = user.phone || '';
+    document.getElementById('modalUserCell').textContent = user.cell || '';
+    document.getElementById('modalUserDob').textContent = new Date(user.dob.date).toLocaleDateString();
+    document.getElementById('modalUserGender').textContent = capitalizeFirstLetter(user.gender);
+
+    //  Show full address
+    const addr = user.location;
+    document.getElementById('modalUserAddress').textContent =
+      `${addr.street.number} ${addr.street.name}, ${addr.city}, ${addr.state}, ${addr.country}, ${addr.postcode}`;
+
+    userModal.show();
+  }
+
+  // Delete user
+  function removeUser() {
+    if (currentlySelectedUserIndex !== -1) {
+      allUsers.splice(currentlySelectedUserIndex, 1);
+      displayUsers(allUsers);
+      userModal.hide();
+      currentlySelectedUserIndex = -1;
+    }
+  }
+
+  // Open edit form modal
+  function showEditForm() {
+    if (currentlySelectedUserIndex === -1) return;
+    const user = allUsers[currentlySelectedUserIndex];
+
+    document.getElementById('editUserIndex').value = currentlySelectedUserIndex;
+    document.getElementById('editFirstName').value = user.name.first;
+    document.getElementById('editLastName').value = user.name.last;
+    document.getElementById('editEmail').value = user.email;
+    document.getElementById('editPhone').value = user.phone || '';
+    document.getElementById('editCell').value = user.cell || '';
+
+    document.getElementById('editDob').value = user.dob?.date
+      ? new Date(user.dob.date).toISOString().split('T')[0]
+      : '';
+
+    document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
+
+    //  Address
+    document.getElementById('editStreet').value =
+      `${user.location.street.number} ${user.location.street.name}`;
+    document.getElementById('editCity').value = user.location.city;
+    document.getElementById('editState').value = user.location.state;
+    document.getElementById('editCountry').value = user.location.country;
+    document.getElementById('editPostcode').value = user.location.postcode;
+
+    userModal.hide();
+    editUserModal.show();
+  }
+
+  // Save edited user
+  function updateUserInfo() {
+    const index = document.getElementById('editUserIndex').value;
+    if (!index) return;
+
+    const firstName = document.getElementById('editFirstName').value;
+    const lastName = document.getElementById('editLastName').value;
+    const email = document.getElementById('editEmail').value;
+    const phone = document.getElementById('editPhone').value;
+    const cell = document.getElementById('editCell').value;
+    const dob = document.getElementById('editDob').value;
+    const gender = document.querySelector('input[name="editGender"]:checked').value;
+
+    const street = document.getElementById('editStreet').value;
+    const city = document.getElementById('editCity').value;
+    const state = document.getElementById('editState').value;
+    const country = document.getElementById('editCountry').value;
+    const postcode = document.getElementById('editPostcode').value;
+
+    // Object details really
+    allUsers[index].name.first = firstName;
+    allUsers[index].name.last = lastName;
+    allUsers[index].email = email;
+    allUsers[index].phone = phone;
+    allUsers[index].cell = cell;
+    allUsers[index].dob.date = new Date(dob).toISOString();
+    allUsers[index].gender = gender;
+
+    //  address
+    const streetParts = street.trim().split(' ');
+    allUsers[index].location.street = {
+      number: streetParts[0] || '',
+      name: streetParts.slice(1).join(' ') || ''
+    };
+    allUsers[index].location.city = city;
+    allUsers[index].location.state = state;
+    allUsers[index].location.country = country;
+    allUsers[index].location.postcode = postcode;
+
+    displayUsers(allUsers);
+    editUserModal.hide();
+    function showMessage(message, isError = false) {
+  // make a new alert box
+  const alertBox = document.createElement("div");
+  
+  // choose red for error, green for success
+  alertBox.className = `alert ${isError ? "alert-danger" : "alert-success"} mt-2`;
+  
+  // put the message text inside
+  alertBox.textContent = message;
+
+  // show it at the top of the page
+  document.body.appendChild(alertBox);
+
+  // remove it after 3 seconds
+  setTimeout(() => {
+    alertBox.remove();
+  }, 3000);
+}
+    // Optional: show success feedback
+    showMessage('User updated successfully!', false);
+  }
+
+  function updateHowNamesAreShown() {
+    if (allUsers.length) displayUsers(allUsers);
+  }
+
+  function showMessage(message, isError = false) {
+    errorAlert.textContent = message;
+    errorAlert.style.display = 'block';
+    errorAlert.className = isError ? 'alert alert-danger mt-3' : 'alert alert-success mt-3';
+  }
+
+  function hideErrorMessage() {
+    errorAlert.style.display = 'none';
+  }
+
+  function showLoadingState(show) {
+    loading.style.display = show ? 'block' : 'none';
+    generateBtn.disabled = show;
+  }
+
+  function capitalizeFirstLetter(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
 });
 
-// All the elements really
-const userCountInput = document.getElementById('userCount');
-const nameTypeSelect = document.getElementById('nameType');
-const generateBtn = document.getElementById('generateBtn');
-const userList = document.getElementById('userList');
-const errorAlert = document.getElementById('errorAlert');
-const loading = document.getElementById('loading');
-
-// We'll store our users in this array kind of a basket really
-let allUsers = []; // basket for user data
-let currentlySelectedUserIndex = -1;
-
-// Set up our modal functionality
-const userModal = new bootstrap.Modal(document.getElementById('userModal'));
-const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-
-// When someone clicks the generate button, let's fetch some users
-generateBtn.addEventListener('click', fetchUsers);
-
-// If they change how names are displayed, update the list
-nameTypeSelect.addEventListener('change', updateHowNamesAreShown);
-
-// Set up what happens when buttons in our modals are clicked
-document.getElementById('modalDeleteBtn').addEventListener('click', removeUser);
-document.getElementById('modalEditBtn').addEventListener('click', showEditForm);
-document.getElementById('saveChangesBtn').addEventListener('click', updateUserInfo);
-
-// This function goes out to the internet to get random users
-async function fetchUsers() {
-  // Figure out how many users they want
-  const numberOfUsers = parseInt(userCountInput.value);
-  
-  // Make sure it's a good number
-  if (isNaN(numberOfUsers) || numberOfUsers < 1 || numberOfUsers > 1000) {
-    showMessage("Please enter a number between 1 and 1000", true);
-    return;
-  }
-
-  // Show we're working on it
-  showLoadingState(true);
-  hideErrorMessage();
-  userList.innerHTML = '';
-
-  try {
-    // Go get the users from the API
-    const response = await fetch(`https://randomuser.me/api/?results=${numberOfUsers}`);
-    if (!response.ok) throw new Error('Oops, the internet seems to be having a bad day');
-    
-    // Parse the data and store it
-    const userData = await response.json();
-    allUsers = userData.results;
-    
-    // Show everyone the new users
-    displayUsers(allUsers);
-  } catch (error) {
-    // Something went wrong, let the user know
-    showMessage("Couldn't get users right now. Please try again.", true);
-  } finally {
-    // Always hide the loading spinner when we're done
-    showLoadingState(false);
-  }
-}
-
-// This function puts all the users on the page
-function displayUsers(users) {
-  userList.innerHTML = ''; // Start with a clean slate
-  
-  // Check how they want names displayed
-  const nameDisplayStyle = nameTypeSelect.value;
-
-  // Create a row for each user
-  users.forEach((user, index) => {
-    const displayName = nameDisplayStyle === 'first' ? user.name.first : user.name.last;
-
-    const userRow = document.createElement('div');
-    userRow.className = 'row user-row text-center align-items-center';
-    userRow.setAttribute('data-index', index);
-    
-    // Make the row clickable to show details
-    userRow.addEventListener('dblclick', () => {
-      showUserDetails(index);
-    });
-
-    // Fill the row with user information
-    userRow.innerHTML = `
-      <div class="col-md-3">${displayName}</div>
-      <div class="col-md-2">${capitalizeFirstLetter(user.gender)}</div>
-      <div class="col-md-4 text-truncate" title="${user.email}">${user.email}</div>
-      <div class="col-md-3">${user.location.country}</div>
-    `;
-
-    // Add the row to our list
-    userList.appendChild(userRow);
-  });
-}
-
-// Shows User details in a modal
-function showUserDetails(index) {
-  currentlySelectedUserIndex = index;
-  const user = allUsers[index];
-  
-  // Fill the modal with the requested user information
-  document.getElementById('modalUserImage').src = user.picture.large;
-  document.getElementById('modalUserFullName').textContent = 
-    `${user.name.title} ${user.name.first} ${user.name.last}`;
-  document.getElementById('modalUserAddress').textContent = 
-    `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
-  document.getElementById('modalUserEmail').textContent = user.email;
-  document.getElementById('modalUserPhone').textContent = user.phone;
-  document.getElementById('modalUserCell').textContent = user.cell;
-  document.getElementById('modalUserDob').textContent = new Date(user.dob.date).toLocaleDateString();
-  document.getElementById('modalUserGender').textContent = capitalizeFirstLetter(user.gender);
-  
-  // Shows the modal
-  userModal.show();
-}
-
-// Removing a user
-function removeUser() {
-  if (currentlySelectedUserIndex !== -1) {
-    allUsers.splice(currentlySelectedUserIndex, 1);
-    displayUsers(allUsers);
-    userModal.hide();
-    currentlySelectedUserIndex = -1;
-  }
-}
-
-// Show the form to edit a user
-function showEditForm() {
-  if (currentlySelectedUserIndex === -1) return;
-  
-  const user = allUsers[currentlySelectedUserIndex];
-  
-  // Fill the form with current user data
-  document.getElementById('editUserIndex').value = currentlySelectedUserIndex;
-  document.getElementById('editFirstName').value = user.name.first;
-  document.getElementById('editLastName').value = user.name.last;
-  document.getElementById('editEmail').value = user.email;
-
-  
-  // Set the correct gender option
-  document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
-  
-  // Fill in address information
-
-  // Switch from view modal to edit modal
-  userModal.hide();
-  editUserModal.show();
-}
-
-// Save the changes made to a user
-function updateUserInfo() {
-  const index = document.getElementById('editUserIndex').value;
-  if (!index) return;
-  
-  // Get all the updated values from the form
-  const firstName = document.getElementById('editFirstName').value;
-  const lastName = document.getElementById('editLastName').value;
-  const email = document.getElementById('editEmail').value;
-  const phone = document.getElementById('editPhone').value;
-  const cell = document.getElementById('editCell').value;
-  const dob = document.getElementById('editDob').value;
-  const gender = document.querySelector('input[name="editGender"]:checked').value;
-
-  
-  // Update the user object with the new information
-  allUsers[index].name.first = firstName;
-  allUsers[index].name.last = lastName;
-  allUsers[index].email = email;
-  allUsers[index].phone = phone;
-  allUsers[index].cell = cell;
-  allUsers[index].dob.date = new Date(dob).toISOString();
-  allUsers[index].gender = gender;
-  // Refresh the display with updated information
-  displayUsers(allUsers);
-  
-  // Close the edit modal
-  editUserModal.hide();
-}
-
-// Update how names are displayed when the selection changes
-function updateHowNamesAreShown() {
-  if (allUsers.length) displayUsers(allUsers);
-}
-
-// Show a message to the user (error or otherwise)
-function showMessage(message, isError = false) {
-  errorAlert.textContent = message;
-  errorAlert.style.display = 'block';
-  errorAlert.className = isError ? 'alert alert-danger mt-3' : 'alert alert-success mt-3';
-}
-
-// Hide any error messages
-function hideErrorMessage() {
-  errorAlert.style.display = 'none';
-}
-
-// Show or hide the loading spinner
-function showLoadingState(show) {
-  loading.style.display = show ? 'block' : 'none';
-  generateBtn.disabled = show;
-}
-
-// Make the first letter of text uppercase
-function capitalizeFirstLetter(text) {
-  if (!text) return '';
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,7 +343,7 @@ function capitalizeFirstLetter(text) {
 ---------------------------------------------------HTML---------------------------------------------------------
 
 
-
+<
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -430,6 +445,7 @@ function capitalizeFirstLetter(text) {
                 <div class="col-sm-4 fw-bold">Gender:</div>
                 <div class="col-sm-8" id="modalUserGender"></div>
               </div>
+          
             </div>
           </div>
         </div>
