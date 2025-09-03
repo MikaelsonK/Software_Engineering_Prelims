@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // modalEl.addEventListener('hidden.bs.modal', cleanupModal);
 
+  //This function determines the correct range of user input
   function validUserCount() { //error
     const count = parseInt(userCountInput.value);
     if (isNaN(count) || count < 1 || count > 1000) {
