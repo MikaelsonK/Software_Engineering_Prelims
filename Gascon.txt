@@ -356,7 +356,6 @@ document.addEventListener('DOMContentLoaded', function () {
 ---------------------------------------------------HTML---------------------------------------------------------
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -416,8 +415,52 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
   </div>
 
-  <!-- User Modal -->
-<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true"> <div class="modal-dialog modal-lg"> <div class="modal-content"> <!-- Top bar of the modal --> <div class="modal-header"> <h5 class="modal-title" id="modalUserName">User Details</h5> <!-- Close button (X) --> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> </div> <!-- Main body of the modal --> <div class="modal-body text-center"> <!-- Profile Image --> <img id="modalUserImage" src="" alt="User Image" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e8e807;; padding: 3px;"> <!-- Pills for user details --> <div class="detail-pill"><strong>Full Name:</strong> <span id="modalUserFullName"></span></div> <div class="detail-pill"><strong>Address:</strong> <span id="modalUserAddress"></span></div> <div class="detail-pill"><strong>Email:</strong> <span id="modalUserEmail"></span></div> <div class="detail-pill"><strong>Phone:</strong> <span id="modalUserPhone"></span></div> <div class="detail-pill"><strong>Cell:</strong> <span id="modalUserCell"></span></div> <div class="detail-pill"><strong>Date of Birth:</strong> <span id="modalUserDob"></span></div> <div class="detail-pill"><strong>Gender:</strong> <span id="modalUserGender"></span></div> </div> <!-- Bottom buttons --> <div class="modal-footer"> <!-- Delete button --> <button type="button" class="btn btn-danger" id="modalDeleteBtn"> <span class="d-none d-md-inline">Delete</span> 🗑️ </button> <!-- Edit button --> <button type="button" class="btn btn-primary" id="modalEditBtn"> <span class="d-none d-md-inline">Edit</span> ✏️ </button> </div> </div> </div> </div>
+<!-- User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Top bar of the modal -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalUserName">User Details</h5>
+        <!-- Close button (X) -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Main body of the modal -->
+      <div class="modal-body text-center">
+
+        <!-- Profile Image -->
+        <img id="modalUserImage" src="" alt="User Image"
+             class="img-fluid rounded-circle mb-3"
+             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e8e807; padding: 3px;">
+
+        <!-- Pills for user details -->
+        <div class="detail-pill"><strong>Full Name:</strong> <span id="modalUserFullName"></span></div>
+        <div class="detail-pill"><strong>Address:</strong> <span id="modalUserAddress"></span></div>
+        <div class="detail-pill"><strong>Email:</strong> <span id="modalUserEmail"></span></div>
+        <div class="detail-pill"><strong>Phone:</strong> <span id="modalUserPhone"></span></div>
+        <div class="detail-pill"><strong>Cell:</strong> <span id="modalUserCell"></span></div>
+        <div class="detail-pill"><strong>Date of Birth:</strong> <span id="modalUserDob"></span></div>
+        <div class="detail-pill"><strong>Gender:</strong> <span id="modalUserGender"></span></div>
+      </div>
+
+      <!-- Bottom buttons -->
+      <div class="modal-footer">
+        <!-- Delete button -->
+        <button type="button" class="btn btn-danger" id="modalDeleteBtn">
+          <span class="d-none d-md-inline">Delete</span> 🗑️
+        </button>
+        <!-- Edit button -->
+        <button type="button" class="btn btn-primary" id="modalEditBtn">
+          <span class="d-none d-md-inline">Edit</span> ✏️
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
   <!-- Edit User Modal -->
   <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -502,7 +545,6 @@ document.addEventListener('DOMContentLoaded', function () {
   <script src="random_user_app.js"></script>
 </body>
 </html>
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
