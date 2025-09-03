@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocoy Random Generator</title>
+    <link rel="stylesheet" href="webdev.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-white">
+    <div class="container overflow-hidden mt-4">
+        <div class="d-flex justify-content-center">
+            <h1>Prelim Random User Generator</h1>
+        </div>
+        <div class="d-flex justify-content-center align-items-center gap-3 p-4 flex-wrap">
+            <div class="d-flex align-items-center gap-2">
+                <label for="userCount" class="visually-hidden">Number of users</label>
+                <input type="number" id="userCount" class="form-control" min="1" max="1000" value="10"
+                placeholder="Input Number of Users (1-1000)">
+            </div>
+        </div>    
+
+        <div id="errorMessage" class="alert alert-danger text-center mx-3 my-2 d-none"></div>   
+
+        <div class="p-3 pb-4">
+            <div class="users-header">
+                <div class="header-item">
+                    <select id="nameTypeSelector" class="name-type-selector">
+                        <option value="first">First Name</option>
+                        <option value="last">Last Name</option>
+                    </select>
+                </div>
+                <div class="header-item">Gender</div>
+                <div class="header-item">Email Address</div>
+                <div class="header-item">Country</div>
+            </div>
+
+            <div id="usersList">
+                <!-- Users -->
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-white">
+                    <h5 class="modal-title" id="userModalLabel">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <img id="modalUserImage" class="user-img" src="" alt="User profile picture">
+
+                    <div class="view-mode">
+                        <div class="popup-user">
+                            <div class="detail-label">Name:</div>
+                            <div id="modalUserName"></div>
+                        </div>
+
+                        <div class="popup-user">
+                            <div class="detail-label">Address:</div>
+                            <div id="modalUserAddress"></div>
+                        </div>
+
+                        <div class="popup-user">
+                            <div class="detail-label">Email:</div>
+                            <div id="modalUserEmail"></div>
+                        </div>
+                        
+                        <div class="popup-user">
+                            <div class="detail-label">Phone:</div>
+                            <div id="modalUserPhone"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="edit-mode" style="display: none;">
+                        <div class="popup-user">
+                            <div class="detail-label">Name:</div>
+                            <input id="editUserName" class="edit-input">
+                        </div>
+
+                        <div class="popup-user">
+                            <div class="detail-label">Address:</div>
+                            <input id="editUserAddress" class="edit-input">
+                        </div>
+
+                        <div class="popup-user">
+                            <div class="detail-label">Email:</div>
+                            <input id="editUserEmail" class="edit-input">
+                        </div>
+
+                        <div class="popup-user">
+                            <div class="detail-label">Phone: </div>
+                            <input class="edit-input" id="editUserPhone">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <div class="popup-actions w-100">
+                        <button id="editButton" class="popup-btn btn-edit">Edit</button>
+                        <button id="deleteButton" class="popup-btn btn-delete">Delete</button>
+                        <button id="saveButton" class="popup-btn btn-edit" style="display: none;">Save</button>
+                        <button id="cancelButton" class="popup-btn btn-delete" style="display: none;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="webdev.js"></script>
+</body>
+</html>
