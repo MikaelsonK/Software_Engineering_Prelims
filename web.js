@@ -36,7 +36,7 @@ function renderUsers() {
       <div class="col">${user.name[nameType]}</div>
       <div class="col">${user.gender}</div>
       <div class="col">${user.email}</div>
-      <div class="col">${user.location.country}</div>
+     
     </div>
   `).join("");
 
