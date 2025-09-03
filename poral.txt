@@ -146,14 +146,14 @@ form.addEventListener('submit', function(e) {
         .then(response => response.json())
         .then(data => {
             users = data.results;
-            renderUsers();
+            showUsers();
         })
         .catch(error => {
             console.log('Something went wrong:', error);
         });
 });
 
-function renderUsers() {
+function showUsers() {
     let tableBody = document.getElementById('userContainer');
     tableBody.innerHTML = '';
 
@@ -164,28 +164,27 @@ function renderUsers() {
         let user = users[i];
         let name = nameBasis === 'first' ? user.name.first : user.name.last;
 
-        let row = document.createElement('tr');
-        row.setAttribute('data-index', i);
+        let row = document.createElement('tr'); //creates row that will hold the data
+        row.setAttribute('data-index', i); //stores index of the user
         row.innerHTML =
             '<td>' + name + '</td>' +
             '<td>' + user.gender + '</td>' +
             '<td>' + user.email + '</td>' +
             '<td>' + user.location.country + '</td>';
 
-
         row.ondblclick = function() {
-            let index = this.getAttribute('data-index');
-            openUserModal(index);
+            let index = this.getAttribute('data-index'); //shows on modal which user was clicked based on the index
+            openUserModal(index); //cannot be 'i' bc it will always be the last index bc of the loop
         };
 
         tableBody.appendChild(row);
     }        
 }
 
-document.getElementById('nameBasis').addEventListener('change', renderUsers);
+document.getElementById('nameBasis').addEventListener('change', showUsers);
 
 function openUserModal(index) {
-    currentUser = index;
+    currentUser = index; // tracks user being viewed/edited
     let user = users[index];
     let modalBody = document.getElementById('modalBody');
     let fullAddress = user.location.street.number + ' ' + user.location.street.name + ', ' +
@@ -214,7 +213,7 @@ function openUserModal(index) {
 document.getElementById('deleteUserBtn').onclick = function() {
     if (currentUser !== null) {
         users.splice(currentUser, 1);
-        renderUsers();
+        showUsers();
         bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
     }
 };
@@ -264,7 +263,7 @@ document.getElementById('editUserBtn').onclick = function() {
                 </div>
             </div>`;
 
-        document.getElementById('saveEditBtn').onclick = function() {
+        document.getElementById('saveEditBtn').onclick = function() { // updates user details
             user.name.title = document.getElementById('editTitle').value;
             user.name.first = document.getElementById('editFirst').value;
             user.name.last = document.getElementById('editLast').value;
@@ -275,8 +274,9 @@ document.getElementById('editUserBtn').onclick = function() {
             user.cell = document.getElementById('editCell').value;
             user.dob.date = document.getElementById('editDob').value;
 
+            // Edits the country to the modal
             let editedAddress = document.getElementById('editFullAddress').value;
-            let parts = editedAddress.split(',').map(p => p.trim()); 
+            let parts = editedAddress.split(', '); 
 
             if (parts.length >= 5) {
                 let addressParts = parts[0].split(" ");
@@ -289,5 +289,5 @@ document.getElementById('editUserBtn').onclick = function() {
 };
 
 document.getElementById('userModal').addEventListener('hidden.bs.modal', function () {
-    renderUsers();
+    showUsers();
 });
