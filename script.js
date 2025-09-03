@@ -234,5 +234,3 @@ editBtn.addEventListener('click', () => {
     openUserModal(selectedUserIndex);
   }
 });
-
-// Hi ma'am
