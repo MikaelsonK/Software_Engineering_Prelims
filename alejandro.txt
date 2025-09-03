@@ -8,7 +8,7 @@
 <body>
     <div class="container mt-5">
         <div class="d-flex mb-3 gap-2">
-            <input id="resultCount" type="number" class="form-control" min="1" max="100" placeholder="Enter number of user">
+            <input id="resultCount" type="number" class="form-control" min="0" max="1000" placeholder="Enter number of user">
             <button id="generateBtn" class="btn btn-outline-secondary">Generate</button>
         </div>
         <div id="inputError" class="alert alert-danger d-none" role="alert"></div>
@@ -34,7 +34,7 @@
             <div class="modal-body" id="modalBody"></div>
             <div class="modal-footer">
                 <button id="deleteBtn" class="btn btn-danger">Delete</button>
-                <button id="editBtn" class="btn btn-primary">Edit</button>
+                <button id="saveBtn" class="btn btn-success">Save</button>
             </div>
             </div>
             </div>
@@ -71,25 +71,36 @@
         document.getElementById('modalTitle').textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
         document.getElementById('modalBody').innerHTML = `
             <img src="${user.picture.large}" class="mb-2 rounded" style="width:100px;height:100px;object-fit:cover;">
-            <div><b>Address:</b> ${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}</div>
-            <div><b>Email:</b> ${user.email}</div>
-            <div><b>Phone:</b> ${user.phone}</div>
-            <div><b>Cell:</b> ${user.cell}</div>
-            <div><b>DOB:</b> ${user.dob.date.slice(0,10)} (${user.dob.age} yrs)</div>
-            <div><b>Gender:</b> ${user.gender}</div>
+            <div class="mb-2">
+                <label class="form-label">Name</label>
+                <input class="form-control" id="modalName" value="${user.name.first} ${user.name.last}">
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Address</label>
+                <input class="form-control" id="modalAddress" value="${user.location.street.number} ${user.location.street.name}, ${user.location.city}">
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Email</label>
+                <input class="form-control" id="modalEmail" value="${user.email}">
+            </div>
         `;
         new bootstrap.Modal(document.getElementById('userModal')).show();
     }
 
     document.getElementById('generateBtn').addEventListener('click', () => {
         const errorDiv = document.getElementById('inputError');
-        let count = parseInt(document.getElementById('resultCount').value, 10) || 10;
+        let count = parseInt(document.getElementById('resultCount').value, 10) || 0;
         if (count < 0 || count > 1000) {
             errorDiv.textContent = 'integer must be 0-1000';
             errorDiv.classList.remove('d-none');
             return;
         } else {
             errorDiv.classList.add('d-none');
+        }
+        if (count === 0) {
+            currentUsers = [];
+            generate(currentUsers);
+            return;
         }
         fetch(`https://randomuser.me/api/?results=${count}`)
         .then((response) => response.json())
@@ -109,15 +120,14 @@
             bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
         }
     };
-    document.getElementById('editBtn').onclick = function() {
+    document.getElementById('saveBtn').onclick = function() {
         if (selectedIdx !== null) {
             const user = currentUsers[selectedIdx];
-            let newEmail = prompt('Edit Email:', user.email);
-            if (newEmail) {
-                user.email = newEmail;
-                generate(currentUsers);
-                document.querySelector('#modalBody div:nth-child(3)').innerHTML = `<b>Email:</b> ${user.email}`;
-            }
+            [user.name.first, user.name.last] = document.getElementById('modalName').value.split(' ');
+            [user.location.street.name, user.location.city] = document.getElementById('modalAddress').value.split(',').map(s=>s.trim());
+            user.email = document.getElementById('modalEmail').value;
+            generate(currentUsers);
+            bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
         }
     };
     </script>
