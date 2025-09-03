@@ -1,5 +1,4 @@
 # HTML #
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +16,7 @@
     </div>
 
     <div class="container-2">
-        <table class="table border-0 bg-transparent text-center align-middle" id="userTable" style="width:100%;">
+        <table class="table border-0 bg-transparent text-center align-middle" id="userTable" style="width:80%;">
             <thead>
                 <tr>
                     <th class="bg-light rounded-pill text-center header-pill">
@@ -26,7 +25,7 @@
                             <option value="last">Last Name</option>
                         </select>
                     </th>
-                    <th class="rounded-pill text-center header-pill" style="background: #e9e9e9">Gender</th>
+                    <th class="rounded-pill text-center header-pill" style="background: #e9e9e9;">Gender</th>
                     <th class="rounded-pill text-center header-pill" style="background: #e9e9e9">Email Address</th>
                     <th class="rounded-pill text-center header-pill" style="background: #e9e9e9">Country</th>
                 </tr>
@@ -37,14 +36,13 @@
         </table>
     </div>
 
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="userModal" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content bg-light">
         <div class="modal-header">
-            <h5 class="modal-title" id="userModalLabel">User Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body text-center" id="modalBody">
+        <div class="modal-body modal-xl text-center" id="modalBody">
         </div>
         <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-danger" id="deleteUserBtn"> Delete</button>
@@ -52,10 +50,6 @@
         </div>
         </div>
     </div>
-    </div>
-
-    <div class="container-3" id="userContainer" >
-        
     </div>
 
 </body>
@@ -133,7 +127,6 @@ td {
 }
 
 -- SCRIPT --
-
 let form = document.getElementById('getForm'); 
 let users = [];
 let currentUser = null;
@@ -144,8 +137,8 @@ form.addEventListener('submit', function(e) {
     let numInput = document.getElementById('numUser');
     let numUsers = numInput.value.trim();
 
-    if (Number(numUsers) <= 0) {
-        alert("Please enter a number of users.");
+    if (numUsers <= 0 || numUsers > 1000) {
+        alert("Please enter a valid number of users between 1 and 1000.");
         return;
     }
 
@@ -179,13 +172,14 @@ function renderUsers() {
             '<td>' + user.email + '</td>' +
             '<td>' + user.location.country + '</td>';
 
+
         row.ondblclick = function() {
             let index = this.getAttribute('data-index');
             openUserModal(index);
         };
 
         tableBody.appendChild(row);
-    }
+    }        
 }
 
 document.getElementById('nameBasis').addEventListener('change', renderUsers);
@@ -194,7 +188,6 @@ function openUserModal(index) {
     currentUser = index;
     let user = users[index];
     let modalBody = document.getElementById('modalBody');
-
     let fullAddress = user.location.street.number + ' ' + user.location.street.name + ', ' +
                       user.location.city + ', ' + user.location.state + ', ' +
                       user.location.country + ', ' + user.location.postcode;
@@ -209,15 +202,14 @@ function openUserModal(index) {
             <div class="user-pill"><b>Address</b><br>${fullAddress}</div>
             <div class="user-pill"><b>Email</b><br>${user.email}</div>
             <div class="user-pill"><b>Phone</b><br>${user.phone}</div>
-            <div class="user-pill"><b>Cell</b><br>${user.cell}</div>
-            <div class="user-pill"><b>DOB</b><br>${new Date(user.dob.date).toLocaleDateString()}</div>
-        </div>
-    `;
+            <div class="user-pill"><b>Telephone Number</b><br>${user.cell}</div>
+            <div class="user-pill"><b>Date of birth</b><br>${new Date(user.dob.date).toLocaleDateString()}</div>
+            <div class="user-pill"><b>Gender</b><br>${user.gender}</div>
+        </div>`;
 
     let modal = new bootstrap.Modal(document.getElementById('userModal'));
     modal.show();
 }
-
 
 document.getElementById('deleteUserBtn').onclick = function() {
     if (currentUser !== null) {
@@ -235,31 +227,67 @@ document.getElementById('editUserBtn').onclick = function() {
                           user.location.city + ', ' + user.location.state + ', ' +
                           user.location.country + ', ' + user.location.postcode;
 
-        modalBody.innerHTML =
-            '<img src="' + user.picture.large + '" class="rounded-circle mb-3" style="width:100px;height:100px;">' +
-            '<div><input type="text" id="editTitle" value="' + user.name.title + '"></div>' +
-            '<div><input type="text" id="editFirst" value="' + user.name.first + '"></div>' +
-            '<div><input type="text" id="editLast" value="' + user.name.last + '"></div>' +
-            '<div><input type="text" id="editGender" value="' + user.gender + '"></div>' +
-            '<div><input type="text" id="editFullAddress" value="' + fullAddress + '"></div>' +
-            '<div><input type="email" id="editEmail" value="' + user.email + '"></div>' +
-            '<div><input type="text" id="editPhone" value="' + user.phone + '"></div>' +
-            '<div><input type="text" id="editCell" value="' + user.cell + '"></div>' +
-            '<div><input type="date" id="editDob" value="' + user.dob.date.substring(0, 10) + '"></div>' +
-            '<button id="saveEditBtn">Save</button>';
+        modalBody.innerHTML = `
+            <div class="user-card">
+                <div class="user-avatar text-center mb-3">
+                    <img src="${user.picture.large}" class="rounded-circle" style="width:100px;height:100px;"></div>
+
+                <div>
+                    <input type="text" class="form-control rounded-pill" id="editTitle" style= "width: 500px;" value="${user.name.title}">
+                </div>
+                <div>
+                    <input type="text" class="form-control rounded-pill" id="editFirst" style= "width: 500px;" value="${user.name.first}">
+                </div>
+                <div>
+                    <input type="text" class="form-control rounded-pill" id="editLast" style= "width: 500px;" value="${user.name.last}">
+                </div>
+                <div >
+                    <input type="text" class="form-control rounded-pill" id="editGender" style= "width: 500px;" value="${user.gender}">
+                </div>
+                <div >
+                    <input type="text" class="form-control rounded-pill" id="editFullAddress" style= "width: 500px;" value="${fullAddress}">
+                </div>
+                <div>
+                    <input type="email" class="form-control rounded-pill" id="editEmail" style= "width: 500px;" value="${user.email}">
+                </div>
+                <div>
+                    <input type="text" class="form-control rounded-pill" id="editPhone" style= "width: 500px;" value="${user.phone}">
+                </div>
+                <div>
+                    <input type="text" class="form-control rounded-pill" id="editCell" style= "width: 500px;" value="${user.cell}">
+                </div>
+                <div>
+                    <input type="date" class="form-control rounded-pill" id="editDob" style= "width: 500px;" value="${user.dob.date.substring(0, 10)}">
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary rounded-pill px-4" id="saveEditBtn">Save</button>
+                </div>
+            </div>`;
 
         document.getElementById('saveEditBtn').onclick = function() {
             user.name.title = document.getElementById('editTitle').value;
             user.name.first = document.getElementById('editFirst').value;
             user.name.last = document.getElementById('editLast').value;
             user.gender = document.getElementById('editGender').value;
-            fullAddress = document.getElementById('editFullAddress').value;
+            user.fullAddress = document.getElementById('editFullAddress').value;
             user.email = document.getElementById('editEmail').value;
             user.phone = document.getElementById('editPhone').value;
             user.cell = document.getElementById('editCell').value;
-            user.dob.date = document.getElementById('editDob').value;   
+            user.dob.date = document.getElementById('editDob').value;
 
-            openUserModal(currentUser);
+            let editedAddress = document.getElementById('editFullAddress').value;
+            let parts = editedAddress.split(',').map(p => p.trim()); 
+
+            if (parts.length >= 5) {
+                let addressParts = parts[0].split(" ");
+                user.location.country = parts[3];
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
         };
     }
 };
+
+document.getElementById('userModal').addEventListener('hidden.bs.modal', function () {
+    renderUsers();
+});
