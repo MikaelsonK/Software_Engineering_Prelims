@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <title>Random User Generator</title>
   <meta charset="UTF-8">
@@ -16,11 +16,11 @@
   <h1>RANDOM USER GENERATOR</h1>
 
   <!--input box for num of users + loading gif -->
-  <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+  <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
     <input id="numInput" type="number" min="1" max="1000" class="design-format w-50"
            placeholder="Enter number of random users">
 
-    <div id="loadGif" style="display:none;">
+    <div id="loadGif">
       <img src="https://media4.giphy.com/media/WuyE7QLUATclSwHh3u/giphy.gif" 
            alt="Loading..." id="loadingGifCat">
     </div>
@@ -33,7 +33,7 @@
   <div id="output" class="container">
     <div class="header-row">
       <!--dropdown for names -->
-      <select id="nameMode" class="form-select header-pill border-0 text-center" style="width:auto;">
+      <select id="nameMode" class="form-select header-pill border-0 text-center">
         <option>First Name</option>
         <option>Last Name</option>
       </select>
@@ -45,12 +45,12 @@
   </div>
 
   <!--modal for user details -->
-  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="userModal">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         
         <div class="modal-header">
-          <h5 class="modal-title">User Details</h5>
+          <h5 class="modal-title"><strong>User Details</strong></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
@@ -63,17 +63,18 @@
           <!--editable fields -->
           <form id="editForm">
             <div class="mb-2"><strong>Name:</strong> <input type="text" id="modalName" class="design-format"></div>
-            <div class="mb-2"><strong>Address:</strong> <input type="text" id="modalAddress" class="design-format"></div>
-            <div class="mb-2"><strong>Email:</strong> <input type="text" id="modalEmail" class="design-format"></div>
-            <div class="mb-2"><strong>Phone Number:</strong> <input type="text" id="modalCell" class="design-format"></div>
-            <div class="mb-2"><strong>Telephone Number:</strong> <input type="text" id="modalPhone" class="design-format"></div>
-            <div class="mb-2"><strong>Date of Birth:</strong> <input type="text" id="modalDob" class="design-format"></div>
-            <div class="mb-2"><strong>Gender:</strong> <input type="text" id="modalGender" class="design-format"></div>
+            <div class="mb-2"><strong>Address:</strong> <input type="text" id="modalAddress" class="design-format"readonly</div>
+            <div class="mb-2"><strong>Email:</strong> <input type="text" id="modalEmail" class="design-format" readonly></div>
+            <div class="mb-2"><strong>Phone Number:</strong> <input type="text" id="modalCell" class="design-format" readonly></div>
+            <div class="mb-2"><strong>Telephone Number:</strong> <input type="text" id="modalPhone" class="design-format" readonly></div>
+            <div class="mb-2"><strong>Date of Birth:</strong> <input type="text" id="modalDob" class="design-format" readonly></div>
+            <div class="mb-2"><strong>Gender:</strong> <input type="text" id="modalGender" class="design-format" readonly></div>
           </form>
         </div>
 
         <div class="modal-footer">
           <button id="deleteBtn" class="btn btn-danger">Delete</button>
+          <button id="editBtn" class="btn btn-primary" >Edit</button>
           <button id="saveBtn" class="btn btn-success">Save</button>
         </div>
       </div>

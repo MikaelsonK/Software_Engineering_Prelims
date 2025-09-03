@@ -11,35 +11,27 @@ let selectedUserIndex = null;
 //track if we show first or last name
 let nameMode = "first";
 
-//function to call randomuser api and get random users
-async function fetchRandomUsers(num) {
-  let response;
-  try {
-    response = await fetch(`https://randomuser.me/api/?results=${num}`);
-  } catch (error) {
-    throw new Error("You have no internet, try again: " + error.message);
-  }
-
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-  }
-
-  let data;
-  try {
-    data = await response.json();
-  } catch (error) {
-    throw new Error("Invalid JSON response from API.");
-  }
-
-  if (!data.results || data.results.length === 0) {
-    throw new Error("No users returned from API");
-  }
-
-  //create full address for each user
-  return data.results.map(user => {
-    user.fullAddress = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.country}`;
-    return user;
-  });
+//fetch randomuser api and get random users, check error
+function fetchRandomUsers(num) {
+  return fetch(`https://randomuser.me/api/?results=${num}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      return data.results.map(user => {
+        user.fullAddress = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.country}`;
+        return user;
+      });
+    })
+    .catch(error => {
+      if (error instanceof SyntaxError) {
+        throw new Error("Invalid JSON response from API.");
+      }
+      throw new Error("Network error: " + error.message);
+    });
 }
 
 //bootstrap modal setup
@@ -55,15 +47,16 @@ const modalGender = document.getElementById("modalGender");
 
 //buttons inside the modal
 const deleteBtn = document.getElementById("deleteBtn");
+const editBtn = document.getElementById("editBtn");
 const saveBtn = document.getElementById("saveBtn");
 
-//show users in the page 
+//clears list 
 function showUsers() {
   output.innerHTML = "";
 
-  //header row
+  //creates header row
   const headerRow = document.createElement("div");
-  headerRow.className = "header-row";
+  headerRow.className = "header-row"; //style
   headerRow.innerHTML = `
     <select id="nameMode" class="form-select header-pill border-0 text-center" style="width:auto;">
       <option value="first" ${nameMode === "first" ? "selected" : ""}>First Name</option>
@@ -79,6 +72,7 @@ function showUsers() {
   users.forEach((user, index) => {
     const displayName = nameMode === "first" ? user.name.first : user.name.last;
 
+    //shows the country part only
     let countryOnly = "";
     if (user.fullAddress) {
       const parts = user.fullAddress.split(",");
@@ -87,8 +81,9 @@ function showUsers() {
       countryOnly = user.location.country;
     }
 
+    //creates new row in user list
     const row = document.createElement("div");
-    row.className = "user-row";
+    row.className = "user-row"; //style
     row.dataset.index = index;
 
     row.innerHTML = `
@@ -97,7 +92,8 @@ function showUsers() {
       <div class="user-pill col-email">${user.email}</div>
       <div class="user-pill">${countryOnly}</div>
     `;
-
+    
+    //doubleclick function
     row.addEventListener("dblclick", function () {
       openUserModal(index);
     });
@@ -130,6 +126,11 @@ function openUserModal(index) {
   modalDob.value = new Date(user.dob.date).toISOString().split("T")[0];
   modalGender.value = user.gender;
 
+  //ensure fields are readonly initially
+  [modalName, modalAddress, modalEmail, modalPhone, modalCell, modalDob, modalGender].forEach(input => {
+    input.setAttribute("readonly", true);
+  });
+
   userModal.show();
 }
 
@@ -140,6 +141,14 @@ deleteBtn.addEventListener("click", function () {
     showUsers();
     userModal.hide();
   }
+});
+
+//edit user
+editBtn.addEventListener("click", () => {
+  [modalName, modalAddress, modalEmail, modalPhone, modalCell, modalDob, modalGender].forEach(input => {
+    input.removeAttribute("readonly");
+  });
+  modalName.focus();
 });
 
 //save user changes
