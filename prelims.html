@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Random User Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container d-flex flex-column align-items-center justify-content-between overflow-hidden mt-5 gap-">
+        <input type="number" id="numUsers" class="form-control w-50 rounded-pill text-center bg-light border-1 shadow-sm mt-5" placeholder="Enter a number of random users" value="" min="0" max="1000" style="height: 50px">
+        <div id="headercontainer" class="d-flex justify-content-between rounded-pill align-items-center gap-5 mt-5 w-75">
+            <div class="header_item bg-light shadow-sm">
+                <select class="form-select bg-light border-0 " id="nameSelector">
+                    <option value="first">First name</option>
+                    <option value="last">Last Name</option>
+                </select>
+            </div>
+            <div class="header_item bg-light shadow-sm">Gender</div>
+            <div class="header_item bg-light shadow-sm" >Email Address</div>
+            <div class="header_item bg-light shadow-sm">Country</div>
+        </div>
+        <div id="errorAlert" class="alert alert-danger d-none mt-3 w-50 text-center"></div>
+        <div id="userContainer" class="mt-4 w-75"></div>
+    </div>
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalContent">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="deleteUser" class="btn btn-danger">Delete</button>
+        <button id="editUser" class="btn btn-primary">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+<script src="script.js"></script>
+</html>
