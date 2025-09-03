@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BORBON Prelims</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <form id="userForm" class="d-flex justify-content-center mb-2"> <!-- input place -->
+            <input id="quantityInput" type="number" min="1" max="1000"
+                placeholder="Enter number of random users"
+                class="form-control fixed-input rounded-pill text-center" />
+        </form>
+
+        <p id="messageElement" class="text-danger small text-center mb-3 d-none"></p>
+
+        <!-- table headers + firstname/lastname -->
+        <div class="row text-center fw-semibold mb-2 gx-2">
+            <div class="col">
+                <select id="nameSelector" class="pill-select">
+                    <option value="first">First Name</option>
+                    <option value="last">Last Name</option>
+                </select>
+            </div>
+            <div class="col"><div class="header-pill">Gender</div></div>
+            <div class="col"><div class="header-pill">Email Address</div></div>
+            <div class="col"><div class="header-pill">Country</div></div>
+        </div>
+
+        <div id="outputContainer"></div>
+    </div>
+
+    <!-- just for modals -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content user-modal">
+                <div class="modal-body text-center">
+                    <img id="modalPicture" class="rounded-circle mb-3" alt="User Picture" width="120" height="120">
+                    <div class="pill-info">
+                        <span class="pill-label">Name</span>
+                        <span id="modalName" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="name">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Address</span>
+                        <span id="modalAddress" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="address">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Email Address</span>
+                        <span id="modalEmail" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="email">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Phone Number</span>
+                        <span id="modalPhone" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="phone">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Telephone Number</span>
+                        <span id="modalCell" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="cell">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Date of Birth</span>
+                        <span id="modalDob" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="dob">edit</button>
+                    </div>
+                    <div class="pill-info">
+                        <span class="pill-label">Gender</span>
+                        <span id="modalGender" class="pill-value"></span>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="gender">edit</button>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button id="deleteUser" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
