@@ -1,5 +1,6 @@
 index.html
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@ index.html
 <body class="bg-light">
 
     <div class="container py-5">
-        <form id="userForm" class="d-flex justify-content-center mb-2">
+        <form id="userForm" class="d-flex justify-content-center mb-2"> <!-- input place -->
             <input id="quantityInput" type="number" min="1" max="1000"
                 placeholder="Enter number of random users"
                 class="form-control fixed-input rounded-pill text-center" />
@@ -20,6 +21,7 @@ index.html
 
         <p id="messageElement" class="text-danger small text-center mb-3 d-none"></p>
 
+        <!-- table headers + firstname/lastname -->
         <div class="row text-center fw-semibold mb-2 gx-2">
             <div class="col">
                 <select id="nameSelector" class="pill-select">
@@ -35,6 +37,7 @@ index.html
         <div id="outputContainer"></div>
     </div>
 
+    <!-- just for modals -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content user-modal">
@@ -43,41 +46,41 @@ index.html
                     <div class="pill-info">
                         <span class="pill-label">Name</span>
                         <span id="modalName" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="name">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="name">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Address</span>
                         <span id="modalAddress" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="address">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="address">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Email Address</span>
                         <span id="modalEmail" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="email">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="email">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Phone Number</span>
                         <span id="modalPhone" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="phone">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="phone">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Telephone Number</span>
                         <span id="modalCell" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="cell">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="cell">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Date of Birth</span>
                         <span id="modalDob" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="dob">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="dob">edit</button>
                     </div>
                     <div class="pill-info">
                         <span class="pill-label">Gender</span>
                         <span id="modalGender" class="pill-value"></span>
-                        <button class="btn btn-sm btn-link edit-pill" data-field="gender">✏️</button>
+                        <button class="btn btn-sm btn-link edit-pill" data-field="gender">edit</button>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-end">
-                    <button id="deleteUser" class="btn btn-danger">🗑️ Delete</button>
+                    <button id="deleteUser" class="btn btn-danger">Delete</button>
                 </div>
             </div>
         </div>
@@ -90,13 +93,16 @@ index.html
 
 
 
+
 script.js
 
-const userForm = document.getElementById('userForm');
-const quantityInput = document.getElementById('quantityInput');
-const messageElement = document.getElementById('messageElement');
-const outputContainer = document.getElementById('outputContainer');
-const nameSelector = document.getElementById('nameSelector');
+
+
+const userForm = document.getElementById('userForm'); // input number
+const quantityInput = document.getElementById('quantityInput'); //number picker thing
+const messageElement = document.getElementById('messageElement'); // error
+const outputContainer = document.getElementById('outputContainer'); //table
+const nameSelector = document.getElementById('nameSelector'); // first name last name
 
 let userData = [];
 let currentIndex = null; // for modal
@@ -108,7 +114,7 @@ function showMessage(text) { // error messages
 
 function updateDisplay() { // user list table
     outputContainer.innerHTML = '';
-    const selectedNameType = nameSelector.value;
+    const selectedNameType = nameSelector.value; // first name last name
     userData.forEach((item, index) => {
         outputContainer.innerHTML += `
         <div class="row text-center user-row" data-index="${index}">
@@ -121,8 +127,8 @@ function updateDisplay() { // user list table
 
     document.querySelectorAll('.user-row').forEach(row => { // modal double click
         row.addEventListener('dblclick', () => {
-            currentIndex = row.getAttribute('data-index');
-            openModal(userData[currentIndex], true); // open modal fresh
+            currentIndex = row.getAttribute('data-index'); // kung ano nga index pra sa user
+            openModal(userData[currentIndex], true); // open modal
         });
     });
 }
@@ -165,7 +171,7 @@ document.querySelectorAll('.edit-pill').forEach(btn => { // edit btn for each in
         } else if (field === "address") {
             currentVal = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
         } else if (field === "dob") {
-            currentVal = new Date(user.dob.date).toISOString().split("T")[0]; // YYYY-MM-DD
+            currentVal = new Date(user.dob.date).toISOString().split("T")[0]; // YYYY-MM-DD (ex"1993-07-20T09:44:18.674Z")
         } else {
             currentVal = user[field];
         }
@@ -175,8 +181,15 @@ document.querySelectorAll('.edit-pill').forEach(btn => { // edit btn for each in
             if (!newVal) return;
             const parts = newVal.split(" ");
             user.name.title = parts[0] || user.name.title;
-            user.name.first = parts[1] || user.name.first;
-            user.name.last = parts[2] || user.name.last;
+
+            if (parts.length > 2) {
+                user.name.first = parts.slice(1, -1).join(" "); // for 2 word first names
+                user.name.last = parts[parts.length - 1] || user.name.last;
+            } else {
+                user.name.first = parts[1] || user.name.first; // title + last name only
+                user.name.last = parts[1] ? "" : user.name.last; // title only
+            }
+
         } else if (field === "address") { // edit address, 1 by 1
             const newStreetNumber = prompt("Edit Street Number:", user.location.street.number);
             if (newStreetNumber) user.location.street.number = newStreetNumber;
@@ -257,6 +270,9 @@ userModalEl.addEventListener('hidden.bs.modal', () => {
 
 
 style.css
+
+
+
 
 .user-modal { /* modal lol*/
     background: #999;
