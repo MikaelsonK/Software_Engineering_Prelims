@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container text-center">
+    <h1 class="mb-2">Random User Generator</h1>
+    <p class="text-muted">Powered by Random User API</p>
+
+    <!-- Input -->
+    <div class="mb-3">
+      <input 
+        type="number" 
+        id="userCount"
+        placeholder="Enter number of random users" 
+        class="form-control w-50 mx-auto text-center rounded-pill"
+      >
+      <p class="small text-muted mt-2">Please enter between 1–1000 only</p>
+    </div>
+
+    <!-- Button -->
+    <div class="mb-4">
+      <button id="generateBtn" class="btn btn-dark rounded-pill px-4">
+        Click to Generate Users
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table align-middle text-center">
+        <thead>
+          <tr class="pill-header">
+            <th class="rounded-pill">
+              <select id="nameFormat" class="form-select form-select-sm border-0 bg-transparent text-center fw-bold">
+                <option value="first">First Name</option>
+                <option value="last">Last Name</option>
+              </select>
+            </th>
+            <th class="rounded-pill">Gender</th>
+            <th class="rounded-pill">Email Address</th>
+            <th class="rounded-pill">Country</th>
+          </tr>
+        </thead>
+        <tbody id="userRows">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+    <!-- User Details Modal -->
+    <div class="modal fade user-modal mb-4 " id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content text-center bg-purple">
+          <div class="modal-header">
+            <h5 class="modal-title text-white" id="userModalLabel">User Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body">
+
+            <!-- Display mode -->
+            <div id="userDisplay">
+              <img id="userPic" src=" " class="rounded-circle user-picture mb-3" width="120" height="120">
+
+              <!-- Pills (view mode) -->
+              <h5 class="rounded-pill full-name-pill bg-white p-2" id="userFullName"></h5>
+              <p class="rounded-pill bg-white p-2" id="userEmail"></p>
+              <p class="rounded-pill bg-white p-2" id="userPhone"></p>
+              <p class="rounded-pill bg-white p-2" id="userDob"></p>
+              <p class="rounded-pill bg-white p-2" id="userGender"></p>
+              <p class="rounded-pill bg-white p-2" id="userAddress"></p>
+            </div>
+
+            <!-- Edit mode (hidden by default) -->
+            <form id="userEditForm" class="d-none text-start">
+              <div class="row">
+                <div class="col">
+                  <input type="text" class="form-control mb-2" id="editFirstName" placeholder="First Name">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control mb-2" id="editLastName" placeholder="Last Name">
+                </div>
+              </div>
+              <input type="email" class="form-control mb-2" id="editEmail" placeholder="Email">
+              <input type="text" class="form-control mb-2" id="editPhone" placeholder="Phone">
+              <input type="date" class="form-control mb-2" id="editDob">
+              <select class="form-control mb-2" id="editGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+              <input type="text" class="form-control mb-2" id="editStreet" placeholder="Street">
+              <input type="text" class="form-control mb-2" id="editCity" placeholder="City">
+              <input type="text" class="form-control mb-2" id="editState" placeholder="State">
+              <input type="text" class="form-control mb-2" id="editCountry" placeholder="Country">
+            </form>
+          </div>
+
+          <div class="modal-footer d-flex justify-content-center">
+            <button id="editUserBtn" class="btn btn-warning">✏️ Edit</button>
+            <button id="saveUserBtn" class="btn btn-success d-none">💾 Save</button>
+            <button id="deleteUserBtn" class="btn btn-danger">🗑️ Delete</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>
