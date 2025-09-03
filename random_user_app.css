@@ -1,0 +1,121 @@
+/* Sets the background color and font for the whole page */
+body {
+  background: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Styles for the main heading */
+h1 {
+    /* Personal note: Chose this color because it was her favorite color */
+  color: #e8e807;
+  font-weight: 700;        /* Makes text bold */
+  text-align: center;      /* Centers the text */
+  margin-bottom: 2rem;     /* Adds space below the heading */
+}
+
+/* Makes the button slightly grow when hovered over */
+#generateBtn:hover {
+  transform: scale(1.03);  /* Grows button by 3% */
+  background-color: #d6d504 !important;  /* Darker yellow on hover */
+  border-color: #d6d504 !important;      /* Matching border color */
+}
+
+/* Styles for the generate button */
+#generateBtn {
+  background-color: #e8e807 !important;  /* Bright yellow background */
+  border-color: #e8e807 !important;      /* Matching border */
+  color: black;                          /* Black text */
+}
+
+/* Styles for each user row in the list */
+.user-row {
+  background: #fff;               /* White background */
+  border-radius: 8px;             /* Rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);  /* Subtle shadow */
+  margin-bottom: 20px; 
+  margin-top: 20px;           /* Space between rows */
+  padding: 15px;                  /* Inner spacing */
+  cursor: pointer;                /* Shows hand cursor on hover */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effects */
+}
+
+/* Hover effect for user rows */
+.user-row:hover {
+  transform: translateY(-2px);    /* Lifts the row slightly */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* Stronger shadow on hover */
+}
+
+/* Container for the column headers */
+.header-container {
+  display: flex;                   /* Arranges items in a row */
+  justify-content: space-between;  /* Spaces items evenly */
+  background: transparent;         /* No background color */
+  border-radius: 8px;              /* Rounded corners */
+  padding: 10px;                   /* Inner spacing */
+  font-weight: 600;                /* Semi-bold text */
+  margin-bottom: 15px;             /* Space below headers */
+}
+
+/* Hover effect for header items */
+.header-item:hover {
+  background-color: #d6d504;       /* Darker yellow on hover */
+  transform: translateY(-2px);     /* Lifts slightly */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);  /* Shadow on hover */
+}
+
+/* Styles for each header item (Name, Gender, etc.) */
+.header-item {
+  background-color: #e8e807;       /* Bright yellow background */
+  color: black;                    /* Black text */
+  padding: 8px 16px;               /* Inner spacing */
+  border-radius: 50px;             /* Pill-shaped ends */
+  margin: 0 5px;                   /* Space between items */
+  text-align: center;              /* Centers text */
+  font-weight: 600;                /* Semi-bold text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+  transition: all 0.3s ease;       /* Smooth hover effects */
+}
+
+.detail-pill {
+  background-color: #e8e807; /* yellow pill */
+  color: #000;               /* black text for contrast */
+  padding: 10px 20px;
+  border-radius: 50px;       /* pill shape */
+  margin: 8px auto;          /* space between pills */
+  font-weight: 500;
+  text-align: center;          /* align text nicely */
+  width: 80%;                /* not full width, but centered */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* subtle shadow */
+}
+
+/* Makes sure the user image in the modal looks good */
+#modalUserImage {
+  max-height: 200px;      /* Limits image height */
+  object-fit: cover;      /* Crops image to fit nicely */
+}
+
+/* Makes the delete and edit buttons in the modal a consistent width */
+#modalDeleteBtn, #modalEditBtn {
+  min-width: 90px;        /* Minimum width for buttons */
+} 
+.header-item select.name-pill-select {
+  background-color: transparent; /* use same yellow as header-item already has */
+  color: black;
+  border: none;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none; /* remove inner shadow */
+}
+
+/* Center the dropdown inside the header-item */
+.header-item.col-md-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
