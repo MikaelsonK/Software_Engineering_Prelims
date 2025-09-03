@@ -1,6 +1,5 @@
 
 -------------------CSS--------------------
-
 /* Sets the background color and font for the whole page */
 body {
   background: #f8f9fa;
@@ -35,7 +34,8 @@ h1 {
   background: #fff;               /* White background */
   border-radius: 8px;             /* Rounded corners */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);  /* Subtle shadow */
-  margin-bottom: 12px;            /* Space between rows */
+  margin-bottom: 20px; 
+  margin-top: 20px;           /* Space between rows */
   padding: 15px;                  /* Inner spacing */
   cursor: pointer;                /* Shows hand cursor on hover */
   transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effects */
@@ -100,7 +100,27 @@ h1 {
 #modalDeleteBtn, #modalEditBtn {
   min-width: 90px;        /* Minimum width for buttons */
 } 
+.header-item select.name-pill-select {
+  background-color: transparent; /* use same yellow as header-item already has */
+  color: black;
+  border: none;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none; /* remove inner shadow */
+}
 
+/* Center the dropdown inside the header-item */
+.header-item.col-md-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -114,36 +134,35 @@ h1 {
 -------------------------------JAVASCRIPT-------------------------------------
 
 
-// Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
   const userCountInput = document.getElementById('userCount');
-  const nameTypeSelect = document.getElementById('nameType');
+  const nameTypeSelect = document.getElementById('nameTypeHeader');
   const generateBtn = document.getElementById('generateBtn');
   const userList = document.getElementById('userList');
   const errorAlert = document.getElementById('errorAlert');
   const loading = document.getElementById('loading');
 
-  let allUsers = []; // store fetched users like just a basket
+  let allUsers = []; // basket
   let currentlySelectedUserIndex = -1;
 
   const userModal = new bootstrap.Modal(document.getElementById('userModal'));
   const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
 
-  // Prevent form submission reload
-  document.getElementById('editUserForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-  });
+  // Prevent form from submitting
+    document.getElementById('editUserForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+    });
 
+  // Event listeners
   generateBtn.addEventListener('click', fetchUsers);
-  nameTypeSelect.addEventListener('change', updateHowNamesAreShown);
+  nameTypeSelect.addEventListener('change', () => displayUsers(allUsers));
   document.getElementById('modalDeleteBtn').addEventListener('click', removeUser);
   document.getElementById('modalEditBtn').addEventListener('click', showEditForm);
   document.getElementById('saveChangesBtn').addEventListener('click', updateUserInfo);
 
-  // Fetch random users
+  // Fetch users from API
   async function fetchUsers() {
     const numberOfUsers = parseInt(userCountInput.value);
-
     if (isNaN(numberOfUsers) || numberOfUsers < 1 || numberOfUsers > 1000) {
       showMessage('Please enter a number between 1 and 1000', true);
       return;
@@ -167,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Display users in list
+  // Display users
   function displayUsers(users) {
     userList.innerHTML = '';
     const nameDisplayStyle = nameTypeSelect.value;
@@ -176,44 +195,73 @@ document.addEventListener('DOMContentLoaded', function () {
       const displayName = nameDisplayStyle === 'first' ? user.name.first : user.name.last;
 
       const userRow = document.createElement('div');
-      userRow.className = 'row user-row text-center align-items-center';
+      userRow.className = 'user-row d-flex align-items-center';
       userRow.setAttribute('data-index', index);
 
+      // Double-click to open edit modal
       userRow.addEventListener('dblclick', () => {
+        currentlySelectedUserIndex = index;
+        showEditForm();
+      });
+
+      // Optional: single-click opens details modal
+      userRow.addEventListener('click', () => {
+        currentlySelectedUserIndex = index;
         showUserDetails(index);
       });
 
       userRow.innerHTML = `
-        <div class="col-md-3">${displayName}</div>
-        <div class="col-md-2">${capitalizeFirstLetter(user.gender)}</div>
-        <div class="col-md-4 text-truncate" title="${user.email}">${user.email}</div>
-        <div class="col-md-3">${user.location.country}</div>
+        <div class="user-col name" style="flex:2; text-align:left; padding-left:5px;">${displayName}</div>
+        <div class="user-col gender" style="flex:2; text-align:center;">${capitalizeFirstLetter(user.gender)}</div>
+        <div class="user-col email" style="flex:3; text-align:center; padding-left:5px;">${user.email}</div>
+        <div class="user-col country" style="flex:2; text-align:right; padding-right:5px;">${user.location.country}</div>
       `;
 
       userList.appendChild(userRow);
     });
   }
 
-  // Show user details in the modal
+  // Show user details modal
   function showUserDetails(index) {
-    currentlySelectedUserIndex = index;
     const user = allUsers[index];
-
     document.getElementById('modalUserImage').src = user.picture.large;
-    document.getElementById('modalUserFullName').textContent =
-      `${user.name.title} ${user.name.first} ${user.name.last}`;
+    document.getElementById('modalUserFullName').textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
     document.getElementById('modalUserEmail').textContent = user.email;
     document.getElementById('modalUserPhone').textContent = user.phone || '';
     document.getElementById('modalUserCell').textContent = user.cell || '';
     document.getElementById('modalUserDob').textContent = new Date(user.dob.date).toLocaleDateString();
     document.getElementById('modalUserGender').textContent = capitalizeFirstLetter(user.gender);
 
-    //  Show full address
     const addr = user.location;
     document.getElementById('modalUserAddress').textContent =
       `${addr.street.number} ${addr.street.name}, ${addr.city}, ${addr.state}, ${addr.country}, ${addr.postcode}`;
 
     userModal.show();
+  }
+
+  // Open edit modal
+  function showEditForm() {
+    if (currentlySelectedUserIndex === -1) return;
+    const user = allUsers[currentlySelectedUserIndex];
+
+    document.getElementById('editUserIndex').value = currentlySelectedUserIndex;
+    document.getElementById('editFirstName').value = user.name.first;
+    document.getElementById('editLastName').value = user.name.last;
+    document.getElementById('editEmail').value = user.email;
+    document.getElementById('editPhone').value = user.phone || '';
+    document.getElementById('editCell').value = user.cell || '';
+    document.getElementById('editDob').value = new Date(user.dob.date).toISOString().split('T')[0];
+    document.querySelector(`input[name="editGender"][value="${user.gender}"]`).checked = true;
+
+    const streetParts = `${user.location.street.number} ${user.location.street.name}`.split(' ');
+    document.getElementById('editStreet').value = streetParts.join(' ');
+    document.getElementById('editCity').value = user.location.city;
+    document.getElementById('editState').value = user.location.state;
+    document.getElementById('editCountry').value = user.location.country;
+    document.getElementById('editPostcode').value = user.location.postcode;
+
+    userModal.hide(); // hide details modal if open
+    editUserModal.show();
   }
 
   // Delete user
@@ -226,40 +274,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Open edit form modal
-  function showEditForm() {
-    if (currentlySelectedUserIndex === -1) return;
-    const user = allUsers[currentlySelectedUserIndex];
-
-    document.getElementById('editUserIndex').value = currentlySelectedUserIndex;
-    document.getElementById('editFirstName').value = user.name.first;
-    document.getElementById('editLastName').value = user.name.last;
-    document.getElementById('editEmail').value = user.email;
-    document.getElementById('editPhone').value = user.phone || '';
-    document.getElementById('editCell').value = user.cell || '';
-
-    document.getElementById('editDob').value = user.dob?.date
-      ? new Date(user.dob.date).toISOString().split('T')[0]
-      : '';
-
-    document.getElementById(`editGender${capitalizeFirstLetter(user.gender)}`).checked = true;
-
-    //  Address
-    document.getElementById('editStreet').value =
-      `${user.location.street.number} ${user.location.street.name}`;
-    document.getElementById('editCity').value = user.location.city;
-    document.getElementById('editState').value = user.location.state;
-    document.getElementById('editCountry').value = user.location.country;
-    document.getElementById('editPostcode').value = user.location.postcode;
-
-    userModal.hide();
-    editUserModal.show();
-  }
-
-  // Save edited user
+  // Save edited user info
   function updateUserInfo() {
-    const index = document.getElementById('editUserIndex').value;
-    if (!index) return;
+    const index = parseInt(document.getElementById('editUserIndex').value);
+    if (isNaN(index)) return;
 
     const firstName = document.getElementById('editFirstName').value;
     const lastName = document.getElementById('editLastName').value;
@@ -275,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const country = document.getElementById('editCountry').value;
     const postcode = document.getElementById('editPostcode').value;
 
-    // Object details really
+    const streetParts = street.trim().split(' ');
     allUsers[index].name.first = firstName;
     allUsers[index].name.last = lastName;
     allUsers[index].email = email;
@@ -283,13 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
     allUsers[index].cell = cell;
     allUsers[index].dob.date = new Date(dob).toISOString();
     allUsers[index].gender = gender;
-
-    //  address
-    const streetParts = street.trim().split(' ');
-    allUsers[index].location.street = {
-      number: streetParts[0] || '',
-      name: streetParts.slice(1).join(' ') || ''
-    };
+    allUsers[index].location.street = { number: streetParts[0], name: streetParts.slice(1).join(' ') };
     allUsers[index].location.city = city;
     allUsers[index].location.state = state;
     allUsers[index].location.country = country;
@@ -297,36 +309,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     displayUsers(allUsers);
     editUserModal.hide();
-    function showMessage(message, isError = false) {
-  // make a new alert box
-  const alertBox = document.createElement("div");
-  
-  // choose red for error, green for success
-  alertBox.className = `alert ${isError ? "alert-danger" : "alert-success"} mt-2`;
-  
-  // put the message text inside
-  alertBox.textContent = message;
-
-  // show it at the top of the page
-  document.body.appendChild(alertBox);
-
-  // remove it after 3 seconds
-  setTimeout(() => {
-    alertBox.remove();
-  }, 3000);
-}
-    // Optional: show success feedback
     showMessage('User updated successfully!', false);
   }
 
-  function updateHowNamesAreShown() {
-    if (allUsers.length) displayUsers(allUsers);
-  }
-
+  // Helpers
   function showMessage(message, isError = false) {
     errorAlert.textContent = message;
     errorAlert.style.display = 'block';
     errorAlert.className = isError ? 'alert alert-danger mt-3' : 'alert alert-success mt-3';
+    setTimeout(() => { errorAlert.style.display = 'none'; }, 3000);
   }
 
   function hideErrorMessage() {
@@ -339,11 +330,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function capitalizeFirstLetter(text) {
-    if (!text) return '';
-    return text.charAt(0).toUpperCase() + text.slice(1);
+    return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
   }
 });
-
+   
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,8 +344,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 ---------------------------------------------------HTML---------------------------------------------------------
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -385,24 +373,31 @@ document.addEventListener('DOMContentLoaded', function () {
           <button class="btn btn-primary" id="generateBtn">Generate</button>
         </div>
         <!-- Dropdown to select name display format -->
-        <select
+        <!-- <select
           class="form-select mt-2"
           id="nameType"
           aria-label="Select name display format"
         >
           <option value="first">First Name</option>
           <option value="last">Last Name</option>
-        </select>
+        </select> -->
       </div>
     </div>
 
     <!-- Updated Header Row -->
-<div class="header-container">
-  <div class="header-item col-md-2" >Name</div>
+<!-- Header row with dropdown pill for Name -->
+<div class="header-container row text-center align-items-center">
+  <div class="header-item col-md-2">
+    <select class="name-pill-select" id="nameTypeHeader">
+      <option value="first">First Name</option>
+      <option value="last">Last Name</option>
+    </select>
+  </div>
   <div class="header-item col-md-2">Gender</div>
   <div class="header-item col-md-3">Email</div>
-  <div class="header-item col-md-3">Country</div>
+  <div class="header-item col-md-2">Country</div>
 </div>
+
 
     <div id="userList"></div>
 
