@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+#userCount {
+    width: 300px;
+    text-align: center;
+    border-radius: 50px;
+    border: solid 1px;
+}
+
+
+.users-header {
+    display: grid;
+    grid-template-columns: 25% 15% 40% 20%;
+    background-color: none;
+    color: white;
+    padding: 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.header-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 12px;
+    background-color: #525252;
+    border-radius: 50px;
+    font-weight: 600;
+    min-height: 40px;
+}
+
+.user-row {
+    display: grid;
+    grid-template-columns: 25% 15% 40% 20%;
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background: white;
+    align-items: center;
+    gap: 10px;
+}
+
+.name-type-selector {
+    background-color: #525252;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    position: relative;
+}
+
+.user-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 15px;
+    border: 3px solid #f0f0f0;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.alert {
+    margin: 15px;
+}
+
+.popup-user{
+    border: solid;
+    border-width: 1px;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.popup-detail{
+    border: none;
+}
+        
+.popup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.popup-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-edit {
+    background-color: #17ea6f;
+    color: #000;
+}
+
+.btn-delete {
+    background-color: #ff0019;
+    color: white;
+}
+
+.edit-mode .view-mode {
+    display: none;
+}
+        
+.edit-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.modal-content {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    padding: 15px 25px;
+}
