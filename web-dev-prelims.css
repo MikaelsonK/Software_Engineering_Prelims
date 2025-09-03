@@ -3,6 +3,10 @@ body {
     font-family: Arial, sans-serif;
 }
 
+head {
+    font-family: cursive;
+}
+
 #randomUserNumber {
     padding: 20px;
     width: 400px;
@@ -39,8 +43,3 @@ tr {
     background-color: orange;
 }
 
-span {
-    padding: 15px;
-    background-color: #f3f8f7;
-    border-radius: 15px;
-}
