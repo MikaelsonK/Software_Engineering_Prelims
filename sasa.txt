@@ -354,3 +354,4 @@ style.css
 .pill-select {
   padding: 0.5rem 1rem;
 }
+
