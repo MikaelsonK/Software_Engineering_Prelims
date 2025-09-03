@@ -40,11 +40,6 @@ async function getUsers(count) {
   }
 }
 
-function capitalizeFirstLetter(value) {
-  if (!value && value !== "") return "";
-  value = String(value).trim();
-  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-}
 
 // Display users in table
 function setUsersInfo(users) {
@@ -55,11 +50,13 @@ function setUsersInfo(users) {
 
     let nameDisplay = (nameSelect.value === "first") ? user.name.first : user.name.last;
 
-    let genderDisplay = capitalizeFirstLetter(user.gender);
+   let genderDisplay = user.gender
+     ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1)
+      : "N/A";
 
     row.innerHTML = `
       <td>${nameDisplay}</td>
-      <td>${user.gender}</td>
+      <td>${genderDisplay}</td>
       <td><a href="mailto:${user.email}">${user.email}</a></td>
       <td>${user.location.country}</td>
     `;
