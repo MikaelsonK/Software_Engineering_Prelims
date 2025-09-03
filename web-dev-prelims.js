@@ -43,7 +43,7 @@ function displayUsers() {
         let displayName = nameSelect === 'first-name' ? user.name.first : user.name.last;
 
         html += `
-            <tr data-index="${index} style="color: blue;">
+            <tr data-index="${index}">
                 <td>${displayName}</td>
                 <td>${user.gender}</td>
                 <td>${user.email}</td>
