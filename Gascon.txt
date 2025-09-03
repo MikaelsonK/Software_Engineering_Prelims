@@ -85,7 +85,7 @@ h1 {
   border-radius: 50px;       /* pill shape */
   margin: 8px auto;          /* space between pills */
   font-weight: 500;
-  text-align: left;          /* align text nicely */
+  text-align: center;          /* align text nicely */
   width: 80%;                /* not full width, but centered */
   box-shadow: 0 2px 5px rgba(0,0,0,0.15); /* subtle shadow */
 }
