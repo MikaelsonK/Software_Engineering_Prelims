@@ -449,11 +449,11 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="modal-footer">
         <!-- Delete button -->
         <button type="button" class="btn btn-danger" id="modalDeleteBtn">
-          <span class="d-none d-md-inline">Delete</span> 🗑️
+          <span class="d-none d-md-inline">Delete</span> 
         </button>
         <!-- Edit button -->
         <button type="button" class="btn btn-primary" id="modalEditBtn">
-          <span class="d-none d-md-inline">Edit</span> ✏️
+          <span class="d-none d-md-inline">Edit</span> 
         </button>
       </div>
 
