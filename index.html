@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Numbered Random User Generator </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <style>
+        #table-container {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(128, 128, 128, 0.786);
+        }
+    </style>
+</head>
+<body class="m-3">
+    <h1 class="jumbotron text-center"> Numbered Random User Generator </h1>
+    <div class="container col">
+        <div class="row mb-4 mt-4">
+            <div class="form-group row mb-2 mt-2"> 
+                <input class="col form-control me-2" type="number" id="number-of-users" name="number-of-users" placeholder="Enter number of random users" min="1" max="1000" required>
+                <button type="button" class="col-2 btn btn-primary" id="button"> Generate Users </button>
+                <p class="col align-middle text-end" id="testnumber"> </p>
+            </div>
+        </div>
+        <div class="table-container row" id="table-container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr> 
+                        <th> 
+                            <select class="form-select fw-bold align-middle" name="name-option" id="name-option"> 
+                                <option value="first-name" class="name-select-option"> First Name </option>
+                                <option value="last-name" class="name-select-option"> Last Name </option>
+                            </select> 
+                        </th>
+                        <th> Gender </th>
+                        <th> Email Address </th>
+                        <th> Country </th>
+                    </tr>
+                </thead>
+            <tbody class="table-group-divider" id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<div class="modal fade" tabindex="-1" id="user-modal" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog"> 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title"> 
+                    User Profile
+                </h5>
+                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img src="user.jpg" id="user-picture" alt="user picture" class="rounded-circle img-fluid border mb-3" width="100" height="100"> 
+                </div>
+                    <p> Name: <span id="name-title"> </span> <span id="name-first"> </span> <span id="name-last"> </span> </p>
+                    <p> Address: <span id="address-street-number"> </span> <span id="address-street-name"> </span> <span id="address-city"> </span> <span id="address-state"> </span> <span id="address-country"> </span> <span id="address-postcode"> </span> </p>
+                    <p> Email: <span id="user-email"> </span> </p>
+                    <p> Phone Number: <span id="user-pnumber"> </span> </p>
+                    <p> Telephone Number: <span id="user-tnumber"> </span> </p>
+                    <p> Date of Birth: <span id="user-birthdate"> </span> </p>
+                    <p> Gender: <span id="user-gender"> </span> </p>
+                <div class="modal-footer justify-content-start">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-delete" id="delete-user">
+                        Delete User
+                    </button>
+                    <button class="btn btn-primary" id="edit-user">
+                        Edit User
+                    </button>
+                    <button class="btn btn-primary d-none" id="confirm-edit">
+                        Save Changes
+                    </button>
+                    <button class="btn btn-primary d-none" id="cancel-edit">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="confirm-delete" aria-labelledby="modal-title" aria-hidden="true"> 
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">
+                    Are you sure to delete this user?
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+             <div class="modal-body">
+                    <button type="button" class="btn btn-primary btn-block" id="confirm"> Yes </button>
+                    <button type="button" class="btn btn-primary btn-block" id="cancel"> No </button>
+                </div>
+        </div>
+    </div>
+</div>
+    <script src="script.js"> </script>
+</body>
+</html>

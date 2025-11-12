@@ -1,0 +1,362 @@
+Web Dev Code
+HTML Code
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Numbered Random User Generator </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</head>
+<body class="m-3">
+    <h1 class="jumbotron text-center"> Numbered Random User Generator </h1>
+    <div class="container col">
+        <div class="row">
+            <div class="form-group row mb-2 mt-2"> 
+                <input class="col form-control me-2" type="number" id="number-of-users" name="number-of-users" placeholder="Enter number of random users" min="1" max="1000" required>
+                <button type="button" class="col-2 btn btn-primary" id="button"> Generate Users </button>
+                <p class="col align-middle text-end" id="testnumber"> </p>
+            </div>
+        </div>
+        <div class="table-container row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr> 
+                        <th> 
+                            <select class="form-select fw-bold align-middle" name="name-option" id="name-option"> 
+                                <option value="first-name" class="name-select-option"> First Name </option>
+                                <option value="last-name" class="name-select-option"> Last Name </option>
+                            </select> 
+                        </th>
+                        <th> Gender </th>
+                        <th> Email Address </th>
+                        <th> Country </th>
+                    </tr>
+                </thead>
+            <tbody class="table-group-divider" id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<div class="modal fade" tabindex="-1" id="user-modal" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog"> 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title"> 
+                    User Profile
+                </h5>
+                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img src="user.jpg" id="user-picture" alt="user picture" class="rounded-circle img-fluid border mb-3" width="100" height="100"> 
+                </div>
+                    <p> Name: <span id="name-title"> </span> <span id="name-first"> </span> <span id="name-last"> </span> </p>
+                    <p> Address: <span id="address-street-number"> </span> <span id="address-street-name"> </span> <span id="address-city"> </span> <span id="address-state"> </span> <span id="address-country"> </span> <span id="address-postcode"> </span> </p>
+                    <p> Email: <span id="user-email"> </span> </p>
+                    <p> Phone Number: <span id="user-pnumber"> </span> </p>
+                    <p> Telephone Number: <span id="user-tnumber"> </span> </p>
+                    <p> Date of Birth: <span id="user-birthdate"> </span> </p>
+                    <p> Gender: <span id="user-gender"> </span> </p>
+                <div class="modal-footer justify-content-start">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-delete" id="delete-user">
+                        Delete User
+                    </button>
+                    <button class="btn btn-primary" id="edit-user">
+                        Edit User
+                    </button>
+                    <button class="btn btn-primary d-none" id="confirm-edit">
+                        Save Changes
+                    </button>
+                    <button class="btn btn-primary d-none" id="cancel-edit">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="confirm-delete" aria-labelledby="modal-title" aria-hidden="true"> 
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">
+                    Are you sure to delete this user?
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+             <div class="modal-body">
+                    <button type="button" class="btn btn-primary btn-block" id="confirm"> Yes </button>
+                    <button type="button" class="btn btn-primary btn-block" id="cancel"> No </button>
+                </div>
+        </div>
+    </div>
+</div>
+    <script src="script.js"> </script>
+</body>
+</html>
+
+
+
+JavaScript Code
+
+const numberOfRandomUsers = document.querySelector('#number-of-users');
+const button = document.querySelector('#button');
+const nameOption = document.querySelector('#name-option');
+const testnumber = document.querySelector('#testnumber');
+const tableBody = document.querySelector('#table-body');
+const userPicture = document.querySelector('#user-picture');
+const userName = document.querySelector('#user-name');
+const userAddress = document.querySelector('#user-address');
+const userEmail = document.querySelector('#user-email');
+const userPhoneNumber = document.querySelector('#user-pnumber');
+const userTelephoneNumber = document.querySelector('#user-tnumber');
+const userBirthdate = document.querySelector('#user-birthdate');
+const userGender = document.querySelector('#user-gender');
+const confirmDelete = document.querySelector('#confirm');
+const cancelDelete = document.querySelector('#cancel');
+const editUser = document.querySelector('#edit-user');
+const deleteUser = document.querySelector('#delete-user');
+const confirmEdit = document.querySelector('#confirm-edit');
+const cancelEdit = document.querySelector('#cancel-edit');
+
+const nameTitle = document.querySelector('#name-title');
+const nameFirst = document.querySelector('#name-first');
+const nameLast = document.querySelector('#name-last');
+
+const AddressStreetNumber = document.querySelector('#address-street-number');
+const AddressStreetName = document.querySelector('#address-street-name');
+const AddressCity = document.querySelector('#address-city');
+const AddressState = document.querySelector('#address-state');
+const AddressCountry = document.querySelector('#address-country');
+const AddressPostcode = document.querySelector('#address-postcode');
+
+const modal = new bootstrap.Modal(document.querySelector('#user-modal'));
+const deleteModal = new bootstrap.Modal(document.querySelector('#confirm-delete'));
+
+let userData;
+let specificRow;
+let userModal;
+let tempIndex;
+
+const addRow = (name, gender, emailAddress, country) => {
+    let newRow = document.createElement("tr");
+    let nameCell = document.createElement("td");
+    nameCell.textContent = name;
+    let genderCell = document.createElement("td");
+    genderCell.textContent = gender;
+    let emailAddressCell = document.createElement("td");
+    emailAddressCell.textContent = emailAddress;
+    let countryCell = document.createElement("td");
+    countryCell.textContent = country;
+
+    newRow.appendChild(nameCell);
+    newRow.appendChild(genderCell);
+    newRow.appendChild(emailAddressCell);
+    newRow.appendChild(countryCell);
+
+    tableBody.append(newRow);
+
+    newRow.classList.add("table-bordered");
+
+};
+
+const selectedNameOption = (nameOption) => {
+    if (nameOption == "first-name") {
+        return "first";
+    } else {
+        return "last";
+    }
+};
+
+const disableFields = () => {
+    nameTitle.contentEditable = 'false';
+    nameFirst.contentEditable = 'false';
+    nameLast.contentEditable = 'false';
+    AddressStreetNumber.contentEditable = 'false';
+    AddressStreetName.contentEditable = 'false';
+    AddressCity.contentEditable = 'false';
+    AddressState.contentEditable = 'false';
+    AddressCountry.contentEditable = 'false';
+    AddressPostcode.contentEditable = 'false';
+    userEmail.contentEditable = 'false';
+    userPhoneNumber.contentEditable = 'false';
+    userTelephoneNumber.contentEditable = 'false';
+    userBirthdate.contentEditable = 'false';
+    userGender.contentEditable = 'false';
+};
+
+const enableFields = () => {
+    nameTitle.contentEditable = 'true';
+    nameFirst.contentEditable = 'true';
+    nameLast.contentEditable = 'true';
+    AddressStreetNumber.contentEditable = 'true';
+    AddressStreetName.contentEditable = 'true';
+    AddressCity.contentEditable = 'true';
+    AddressState.contentEditable = 'true';
+    AddressCountry.contentEditable = 'true';
+    AddressPostcode.contentEditable = 'true';
+    userEmail.contentEditable = 'true';
+    userPhoneNumber.contentEditable = 'true';
+    userTelephoneNumber.contentEditable = 'true';
+    userBirthdate.contentEditable = 'true';
+    userGender.contentEditable = 'true';
+};
+
+const displayInformation = (data) => {
+    userPicture.src = data.picture.large;
+    nameTitle.textContent = data.name['title'];
+    nameFirst.textContent = data.name['first'];
+    nameLast.textContent = data.name['last'];
+    AddressStreetNumber.textContent = data.location.street.number;
+    AddressStreetName.textContent = data.location.street.name;
+    AddressCity.textContent = data.location.city;
+    AddressState.textContent = data.location.state;
+    AddressCountry.textContent = data.location.country;
+    AddressPostcode.textContent = data.location.postcode;
+    userEmail.textContent = data.email;
+    userPhoneNumber.textContent = data.cell;
+    userTelephoneNumber.textContent = data.phone;
+    userBirthdate.textContent = data.dob.date.slice(0, 10);
+    userGender.textContent = data.gender.split("")[0].toUpperCase() + data.gender.split("").slice(1).join("");
+};
+
+const showEditButtons = () => {
+    cancelEdit.classList.remove("d-none");
+    confirmEdit.classList.remove("d-none");
+    deleteUser.classList.add("d-none");
+    editUser.classList.add("d-none");
+}
+
+const hideEditButtons = () => {
+    cancelEdit.classList.add("d-none");
+    confirmEdit.classList.add("d-none");
+    deleteUser.classList.remove("d-none");
+    editUser.classList.remove("d-none");
+}
+
+button.addEventListener("click", () => {
+    tableBody.innerHTML = '';
+    const slashSymbol = "/";
+    testnumber.textContent = `${numberOfRandomUsers.value} user${slashSymbol}s generated`;
+    const userNumber = numberOfRandomUsers.value;
+    const nameOptionValue = nameOption.value;
+    console.log(userNumber);
+    console.log(nameOption.value);
+
+    try {
+    if (userNumber > 1000 || userNumber < 0 || !(/^\d+$/.test(userNumber))) {
+        testnumber.textContent = `no user${slashSymbol}s generated`;
+        throw new Error("Invalid Input");
+    } else {
+        fetch(`https://randomuser.me/api/?results=${userNumber}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network Error");
+        }
+        return response.json();
+    }).then(data => {
+        userData = data.results;
+        console.log(userData);
+        return userData;
+    }).then(data => {
+    for (let i = 0; i < userNumber; i++) {
+        let currentUser = data[i];
+        let selectedName = selectedNameOption(nameOptionValue);
+        addRow(currentUser.name[selectedName], currentUser.gender.split("")[0].toUpperCase() + currentUser.gender.split("").slice(1).join(""), currentUser.email, currentUser.location.country);
+    }}).catch(error => {
+        alert(error);
+    })
+    } } catch (err) {
+        alert(err);
+    } 
+}); 
+
+nameOption.addEventListener("change", (event) => {
+    console.log(userData);
+    const nameOptionValue = event.target.value;
+    const userNumber = userData.length;
+    tableBody.innerHTML = '';
+    for (let i = 0; i < userNumber; i++) {
+        let currentUser = userData[i];
+        let selectedName = selectedNameOption(nameOptionValue);
+        addRow(currentUser.name[selectedName], currentUser.gender.split("")[0].toUpperCase() + currentUser.gender.split("").slice(1).join(""), currentUser.email, currentUser.location.country);
+}});
+
+numberOfRandomUsers.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        button.click();
+    }
+});
+
+tableBody.addEventListener("dblclick", () => {
+    specificRow = event.target.closest("tr");
+    console.log(specificRow.rowIndex);
+    console.log(userData[specificRow.rowIndex - 1]);
+    tempIndex = specificRow.rowIndex - 1;
+    userModal = userData[specificRow.rowIndex - 1];
+    displayInformation(userModal);
+    disableFields();
+    hideEditButtons();
+    modal.show();
+});
+
+confirmDelete.addEventListener("click", () => {
+    userData.splice(tempIndex, 1);
+    tableBody.rows[tempIndex].remove();
+    console.log(userData);
+    deleteModal.hide();
+    console.log("user deleted");
+});
+
+cancelDelete.addEventListener("click", () => {
+    deleteModal.hide();
+    modal.show();
+});
+
+editUser.addEventListener("click", () => {
+    console.log(specificRow.rowIndex);
+    console.log(tempIndex);
+    enableFields();
+    showEditButtons();
+});
+
+confirmEdit.addEventListener("click", () => {
+    userData[tempIndex].name['title'] = nameTitle.textContent;
+    userData[tempIndex].name['first'] = nameFirst.textContent;
+    userData[tempIndex].name['last'] = nameLast.textContent;
+    userData[tempIndex].location.street.number = AddressStreetNumber.textContent;
+    userData[tempIndex].location.street.name = AddressStreetName.textContent;
+    userData[tempIndex].location.city = AddressCity.textContent;
+    userData[tempIndex].location.state = AddressState.textContent;
+    userData[tempIndex].location.country = AddressCountry.textContent;
+    userData[tempIndex].location.postcode = AddressPostcode.textContent;
+    userData[tempIndex].email = userEmail.textContent;
+    userData[tempIndex].cell = userPhoneNumber.textContent;
+    userData[tempIndex].phone = userTelephoneNumber.textContent;
+    userData[tempIndex].dob.date = userBirthdate.textContent;
+    userData[tempIndex].gender = userGender.textContent;
+    console.log(tempIndex);
+    tableBody.innerHTML = '';
+    const userNumber = userData.length;
+    const nameOptionValue = nameOption.value;
+    for (let i = 0; i < userNumber; i++) {
+        let currentUser = userData[i];
+        let selectedName = selectedNameOption(nameOptionValue);
+        addRow(currentUser.name[selectedName], currentUser.gender.split("")[0].toUpperCase() + currentUser.gender.split("").slice(1).join(""), currentUser.email, currentUser.location.country);
+    disableFields();
+    hideEditButtons();
+};});
+
+cancelEdit.addEventListener("click", () => {
+    disableFields();
+    hideEditButtons();
+    displayInformation(userModal);
+});
