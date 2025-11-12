@@ -1,0 +1,64 @@
+.user-modal { /* modal lol*/
+    background: #999;
+    border-radius: 20px;
+}
+
+.fixed-input { /* input form*/
+    width: 32ch;
+    text-align: center;
+}
+
+.header-pill,
+.pill,
+.pill-select { /* pills for header normal dropdown */
+    background: #e9ecef;
+    border-radius: 50px;
+    padding: 6px 16px;
+    border: none;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    min-width: 300px;
+}
+
+.pill-select { /* dropdown browser auto */
+    appearance: auto;
+}
+
+.user-row .col { /* user list */
+    padding: 8px 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-lg { /* modal width */
+    max-width: 700px;
+}
+
+.pill-info { /* modal pills */
+    background: #f8f9fa;
+    border-radius: 50px;
+    padding: 8px 20px;
+    margin: 8px auto;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
+}
+
+.pill-label { /* labels (name, email add stuff) */
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+}
+
+.pill-value { /* pill data */
+    flex: 2;
+    text-align: center;
+}
+
+.edit-pill { /* edit btn */
+    flex: 1;
+    text-align: right;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+}
