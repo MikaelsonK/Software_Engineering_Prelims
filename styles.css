@@ -1,0 +1,104 @@
+body {
+    background-color: #f8f9fa;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+.input-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.simple-input::-webkit-outer-spin-button,
+.simple-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.simple-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.simple-input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    width: 250px;
+    outline: none;
+}
+
+.simple-input::placeholder {
+    color: #070707;
+}
+
+.simple-input:focus {
+    border-color: #ffffff;
+}
+
+.header-row {
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-weight: 600;
+}
+
+.user-row {
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 12px;
+}
+
+.user-data-row {
+    cursor: pointer;
+}
+
+.user-data-row:hover .user-row {
+    background: #979797;
+}
+
+.simple-select {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+}
+
+.loading-text {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.error-text {
+    text-align: center;
+    padding: 20px;
+    color: #dc3545;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+    .simple-input {
+        width: 200px;
+    }
+    
+    .col-3 {
+        flex: 0 0 auto;
+        width: 50%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .col-3 {
+        width: 100%;
+    }
+}
