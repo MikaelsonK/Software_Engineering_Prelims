@@ -1,0 +1,36 @@
+body {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+h2, label {
+  font-weight: bold;
+}
+#userTable th, #userTable td {
+  text-align: center;
+  vertical-align: middle;
+}
+#countdown {
+  font-size: 1.1rem;
+  color: aliceblue;
+  transition: opacity 0.3s ease-in-out;
+}
+#error {
+  font-weight: 500;
+}
+
+.pill-input {
+  width: 100%;
+  padding: 12px 18px;
+  margin: 6px 0;
+  border-radius: 50px;
+  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.pill-input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(13,110,253,0.3);
+}
