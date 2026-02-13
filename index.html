@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Random User Api</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Container for NumUser input-->
+    <div class="container">
+        <form id="getForm">
+            <label for="numUser"></label>
+            <input class="input-user" type="number" id="numUser" name="numUser" placeholder="Enter number of random users">
+        </form>
+    </div>
+
+    <!--Container for the attributes-->
+    <div class="container-2">
+        <table class="table border-0 bg-transparent text-center align-middle" id="userTable" style="width:80%;">
+            <thead>
+                <tr>
+                    <th class="bg-light rounded-pill text-center header-pill">
+                        <select name="nameBasis" id="nameBasis" class="form-select border-0 rounded-pill text-center">
+                            <option value="first">First Name</option>
+                            <option value="last">Last Name</option>
+                        </select>
+                    </th>
+                    <th class="rounded-pill text-center header-pill" style="background: #e9e9e9;">Gender</th>
+                    <th class="rounded-pill text-center header-pill" style="background: #e9e9e9">Email Address</th>
+                </tr>
+            </thead>
+
+            <!-- Where the data will be inserted-->
+            <tbody id="userContainer">
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for user details-->
+    <div class="modal fade" id="userModal" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-light">
+        <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-xl text-center" id="modalBody">
+            <!-- User details are inserted here-->
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" id="deleteUserBtn"> Delete</button>
+            <button type="button" class="btn btn-primary" id="editUserBtn"> Edit</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+
+<script src="script.js"></script>
+</html>
