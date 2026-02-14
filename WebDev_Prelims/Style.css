@@ -1,0 +1,6 @@
+.box{
+    border: 9px rgb(0,0,0);
+    border-radius: 5px;
+    background-color: rgb(183, 183, 183);
+    padding: 5px
+}
