@@ -1,0 +1,204 @@
+
+This is the raw code, not change styel whatsoever
+
+HTML code
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Random User Generator</title>
+
+  <!-- Bootstrap CSS -->
+   
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.77);
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      width: 20%;
+      box-sizing: border-box;
+      background: rgba(126, 126, 126, 0.833);
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #dbdada;
+    }
+
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Random User Generator</h2>
+
+    <input type="number" id="userCount" placeholder="Enter number of random users" min="1" max="1000">
+    
+    <select id="nameType">
+      <option value="first">First Name</option>
+      <option value="last">Last Name</option>
+    </select>
+
+    <button onclick="generateUsers()">Generate</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th id="nameHeader">First Name</th>
+          <th>Gender</th>
+          <th>Email Address</th>
+          <th>Country</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap Modal -->
+  <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userModalLabel">User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalContent" style="text-align: center;">
+          <!-- Dynamic user info will be injected here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteUserBtn">🗑️ Delete</button>
+          <button type="button" class="btn btn-primary" id="editUserBtn">🖉 Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!--  JS logic -->
+  <script src="WithModal.js"></script>
+</body>
+</html>
+
+
+JS code
+
+function generateUsers() {
+  const count = document.getElementById("userCount").value;
+  const nameType = document.getElementById("nameType").value;
+  const nameHeader = document.getElementById("nameHeader");
+  const tableBody = document.getElementById("userTableBody");
+
+  if (count < 1 || count > 1000) {
+    alert("Please enter a number between 1 and 1000.");
+    return;
+  }
+
+  nameHeader.textContent = nameType === "first" ? "First Name" : "Last Name";
+  tableBody.innerHTML = "";
+
+  fetch("https://randomuser.me/api/?results=" + count)
+    .then(response => response.json())
+    .then(data => {
+      data.results.forEach(user => {
+        const name = nameType === "first" ? user.name.first : user.name.last;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${name}</td>
+          <td>${user.gender}</td>
+          <td>${user.email}</td>
+          <td>${user.location.country}</td>
+        `;
+
+        // Show modal on double-click
+        row.addEventListener("dblclick", () => {
+          const initials = `${user.name.first[0].toUpperCase()}${user.name.last[0].toUpperCase()}`;
+          const fullName = `${user.name.title} ${user.name.first} ${user.name.last}`;
+          const address = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
+
+          const modalContent = document.getElementById("modalContent");
+        modalContent.innerHTML = `
+            <div style="font-size: 48px; font-weight: bold; background: #ccc; width: 80px; height: 80px; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center;">
+                ${initials}
+            </div>
+            <div class="mt-3 text-start px-4">
+            <label><strong>Full Name:</strong></label>
+            <input type="text" id="editName" class="form-control mb-2" value="${fullName}">
+    
+            <label><strong>Address:</strong></label>
+            <input type="text" id="editAddress" class="form-control mb-2" value="${address}">
+    
+            <label><strong>Email:</strong></label>
+            <input type="email" id="editEmail" class="form-control mb-2" value="${user.email}">
+        </div>
+    `;
+
+
+
+          // Delete 
+
+          document.getElementById("deleteUserBtn").onclick = () => {
+            row.remove();
+            bootstrap.Modal.getInstance(document.getElementById("userModal")).hide();
+          };
+
+          // Edit 
+
+          document.getElementById("editUserBtn").onclick = () => {
+            const updatedName = document.getElementById("editName").value;
+            const updatedAddress = document.getElementById("editAddress").value;
+            const updatedEmail = document.getElementById("editEmail").value;
+
+            // Update the table row cells
+            row.cells[0].textContent = updatedName.split(" ")[1] || updatedName; // Show first or last name
+            row.cells[2].textContent = updatedEmail;
+
+            
+
+            bootstrap.Modal.getInstance(document.getElementById("userModal")).hide();
+           };
+
+
+          const modal = new bootstrap.Modal(document.getElementById("userModal"));
+          modal.show();
+        });
+
+        tableBody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      alert("Something went wrong. Please check your internet connection.");
+      console.error(error);
+    });
+}
