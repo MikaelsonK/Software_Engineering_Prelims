@@ -1,0 +1,62 @@
+body {
+  background-color: #f8f9fa;
+  color: #06041ab7;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-weight: bold;
+  color: #8c06a7;
+}
+
+.controls label {
+  font-weight: bold;
+}
+
+table {
+  background: #ffffff;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table-dark {
+  background-color: #2f1fe0b7;
+}
+
+.user-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 5px solid #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.table-hover tbody tr:hover {
+  cursor: pointer;
+  background-color: rgba(38, 0, 255, 0.959);
+}
+
+.action-buttons .btn {
+  min-width: 100px;
+}
