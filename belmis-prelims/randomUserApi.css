@@ -1,0 +1,43 @@
+body {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+  background: #dedef2;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* keep container max width */
+.container {
+  max-width: 900px;
+}
+
+/* Buttons */
+button {
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Table */
+table {
+  background: transparent;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+/* Custom modal theme (purple) */
+.bg-light-purple {
+  background: #c8abdc;
+}
+
+/* Edit form inside modal */
+.edit-form input {
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.edit-form button {
+  margin: 4px;
+}
