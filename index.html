@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .rounded-pill {
+      border-radius: 50rem !important;
+    }
+    .header-row th {
+      text-align: center;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <!-- Input and button -->
+    <div class="row mb-4 justify-content-center">
+      <div class="col-md-4 mb-2">
+        <input type="number" id="userCount" class="form-control rounded-pill text-center" placeholder="Enter number of users (0-1000)">
+      </div>
+      <div class="col-md-2 mb-2">
+        <button id="generateBtn" class="btn btn-warning w-100 rounded-pill">Generate</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table align-middle text-center">
+        <thead>
+          <tr class="header-row">
+            <th>
+              <select id="nameType" class="form-select rounded-pill text-center">
+                <option value="first">First Name</option>
+                <option value="last">Last Name</option>
+              </select>
+            </th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Gender</span></th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Email Address</span></th>
+            <th><span class="badge bg-light text-dark rounded-pill p-3 fs-5">Country</span></th>
+          </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="modalImg" class="rounded-circle mb-3" width="100" height="100" alt="User">
+
+          <!-- Editable form fields -->
+          <input id="modalName" class="form-control mb-2 text-center" readonly>
+          <textarea id="modalAddress" class="form-control mb-2 text-center" rows="2" readonly></textarea>
+          <input id="modalEmail" class="form-control mb-2 text-center" readonly>
+          <input id="modalPhone" class="form-control mb-2 text-center" readonly>
+          <input id="modalCell" class="form-control mb-2 text-center" readonly>
+          <input id="modalDob" class="form-control mb-2 text-center" readonly>
+          <input id="modalGender" class="form-control mb-2 text-center" readonly>
+        </div>
+
+        <div class="modal-footer justify-content-between px-4">
+          <div>
+            <button id="editBtn" class="btn btn-outline-warning me-2">✏️ Edit</button>
+            <button id="saveBtn" class="btn btn-success d-none me-2">✅ Save</button>
+            <button id="deleteBtn" class="btn btn-outline-danger">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
