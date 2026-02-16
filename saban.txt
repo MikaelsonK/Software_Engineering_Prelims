@@ -1,0 +1,248 @@
+//html 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Random User Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="input-row">
+      <input type="text" id="userCount" placeholder="Enter number of random users" class="border border-dark">
+    </div>
+
+    <div class="headers">
+      <select id="nameType" onchange="renderUsers()">
+        <option value="first">First Name</option>
+        <option value="last">Last Name</option>
+      </select>
+      <div class="header">Gender</div>
+      <div class="header">Email Address</div>
+      <div class="header">Country</div>
+    </div>
+
+    <div id="users"></div>
+    <div class="error" id="error"></div>
+  </div>
+
+  <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content bubble-card">
+        <div class="modal-body text-center">
+          <img id="modalPicture" class="rounded-circle mb-3" width="100" height="100">
+          <div id="modalFields"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-danger" id="deleteUser">Delete</button>
+          <button class="btn btn-warning" id="editUser">Edit</button>
+          <button class="btn btn-success d-none" id="saveUser">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+//css
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  text-align: center;
+  margin: 40px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-row {
+  margin-top: 30px;
+}
+
+input {
+  padding: 10px;         
+  margin: 10px;
+  border-radius: 15px;
+  outline: none;
+  text-align: center;    
+  width: 300px;           
+}
+
+select, .header {
+  padding: 10px 50px;
+  margin: 10px;
+  border-radius: 15px;
+  outline: none;
+}
+
+.headers {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 150px;
+}
+
+.header, select {
+  background: #a886aa;
+  font-weight: bold;
+}
+
+#users {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 200px;   
+}
+
+#users div {
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#users div p {
+  margin: 8px 0;   
+}
+
+.error {
+  color: red;
+  margin-top: 15px;
+}
+
+.bubble-card {
+  background: #876488;
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+}
+
+.bubble-field {
+  background: #f1f1f1;
+  border-radius: 30px;
+  padding: 8px 15px;
+  margin: 10px auto;
+  display: inline-block;
+  color: black;
+  min-width: 70%;
+}
+
+
+//script
+let usersData = [];
+let currentUserIndex = null;
+
+async function fetchUsers() {
+  const count = document.getElementById("userCount").value;
+  const errorDiv = document.getElementById("error");
+  errorDiv.textContent = "";
+  usersData = [];
+
+  if (!count || count < 1 || count > 1000) {
+    errorDiv.textContent = "Please enter a number between 1 and 1000.";
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://randomuser.me/api/?results=${count}`);
+    if (!res.ok) throw new Error("Failed to fetch data from API");
+
+    const data = await res.json();
+    usersData = data.results;
+    renderUsers();
+  } catch (err) {
+    errorDiv.textContent = "Error fetching users: " + err.message;
+  }
+}
+
+function renderUsers() {
+  const usersDiv = document.getElementById("users");
+  const nameType = document.getElementById("nameType").value;
+
+  if (usersData.length === 0) {
+    usersDiv.innerHTML = "";
+    return;
+  }
+
+  let nameRandom = "";
+  let genderRandom = "";
+  let emailRandom = "";
+  let countryRandom = "";
+
+  usersData.forEach((user, index) => {
+    const name = nameType === "first" ? user.name.first : user.name.last;
+    nameRandom += `<p ondblclick="openModal(${index})">${name}</p>`;
+    genderRandom += `<p ondblclick="openModal(${index})">${user.gender}</p>`;
+    emailRandom += `<p ondblclick="openModal(${index})">${user.email}</p>`;
+    countryRandom += `<p ondblclick="openModal(${index})">${user.location.country}</p>`;
+  });
+
+  usersDiv.innerHTML = `
+    <div>${nameRandom}</div>
+    <div>${genderRandom}</div>
+    <div>${emailRandom}</div>
+    <div>${countryRandom}</div>
+  `;
+}
+
+function openModal(index) {
+  currentUserIndex = index;
+  const user = usersData[index];
+
+  document.getElementById("modalPicture").src = user.picture.large;
+
+  document.getElementById("modalFields").innerHTML = `
+    <div class="bubble-field" contenteditable="false" id="modalName">${user.name.title} ${user.name.first} ${user.name.last}</div>
+    <div class="bubble-field" contenteditable="false" id="modalAddress">${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}</div>
+    <div class="bubble-field" contenteditable="false" id="modalEmail">${user.email}</div>
+    <div class="bubble-field" contenteditable="false" id="modalPhone">${user.phone}</div>
+    <div class="bubble-field" contenteditable="false" id="modalCell">${user.cell}</div>
+    <div class="bubble-field" contenteditable="false" id="modalDOB">${new Date(user.dob.date).toLocaleDateString()}</div>
+    <div class="bubble-field" contenteditable="false" id="modalGender">${user.gender}</div>
+  `;
+
+  new bootstrap.Modal(document.getElementById("userModal")).show();
+}
+
+document.getElementById("deleteUser").addEventListener("click", () => {
+  if (currentUserIndex !== null) {
+    usersData.splice(currentUserIndex, 1);
+    renderUsers();
+    bootstrap.Modal.getInstance(document.getElementById("userModal")).hide();
+  }
+});
+
+document.getElementById("editUser").addEventListener("click", () => {
+  document.querySelectorAll("#modalFields .bubble-field").forEach(el => el.contentEditable = "true");
+  document.getElementById("saveUser").classList.remove("d-none");
+  document.getElementById("editUser").classList.add("d-none");
+});
+
+document.getElementById("saveUser").addEventListener("click", () => {
+  const updatedUser = usersData[currentUserIndex];
+
+  updatedUser.name.first = document.getElementById("modalName").innerText.split(" ")[1];
+  updatedUser.name.last = document.getElementById("modalName").innerText.split(" ")[2];
+  updatedUser.email = document.getElementById("modalEmail").innerText;
+  updatedUser.phone = document.getElementById("modalPhone").innerText;
+  updatedUser.cell = document.getElementById("modalCell").innerText;
+  updatedUser.gender = document.getElementById("modalGender").innerText;
+
+  renderUsers();
+
+  document.querySelectorAll("#modalFields .bubble-field").forEach(el => el.contentEditable = "false");
+  document.getElementById("saveUser").classList.add("d-none");
+  document.getElementById("editUser").classList.remove("d-none");
+});
+
+document.getElementById("userCount").addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    fetchUsers();
+  }
+});
