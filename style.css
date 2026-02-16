@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+#numBox {
+  margin-right: 8px;
+}
+
+.header-row .col {
+  background-color: rgb(255, 112, 112) !important;
+  color: black !important;
+  border-radius: 50px !important;
+  padding: 10px !important;
+  margin: 5px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+.header-row select {
+  background-color: rgb(255, 112, 112) !important;
+  color: black !important;
+  border: none !important;
+  border-radius: 50px !important;
+  text-align: center !important;
+}
+
+#rowsBox .row .col {
+  padding: 6px;
+  margin: 0;
+  background: none;
+  border-radius: 0;
+  color: black;
+  word-wrap: break-word;
+}
+
+#getUsers {
+  background-color: rgb(255, 112, 112) !important;
+  color: black !important;
+  border: none !important;
+  border-radius: 50px !important;
+}
+#getUsers:hover {
+  background-color: darkgray !important;
+}

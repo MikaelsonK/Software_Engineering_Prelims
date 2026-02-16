@@ -1,0 +1,186 @@
+Web Dev Code
+
+HTML Code
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random User Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-6 d-flex justify-content-center">
+        <input id="numBox" type="number" 
+               class="form-control rounded-pill text-center shadow-sm me-2"
+               placeholder="Enter number of random users (0-1000)" 
+               min="0" max="1000">
+        <button id="getUsers" class="btn rounded-pill shadow-sm">
+          Generate Users
+        </button>
+      </div>
+    </div>
+
+    <div id="err" class="alert alert-danger d-none text-center"></div>
+
+    <div class="row text-center header-row mb-2">
+      <div class="col">
+        <select id="nameOpt" class="form-select rounded-pill text-center">
+          <option value="first">First Name</option>
+          <option value="last">Last Name</option>
+        </select>
+      </div>
+      <div class="col">Gender</div>
+      <div class="col">Email</div>
+      <div class="col">Country</div>
+    </div>
+
+    <div id="rowsBox"></div>
+  </div>
+
+  <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalName"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img id="modalPicture" src="" class="img-fluid rounded-circle mb-3" alt="User picture">
+          <p id="modalAddress"></p>
+          <p>Email: <span id="modalEmail"></span></p>
+          <p>Phone: <span id="modalPhone"></span></p>
+          <p>Cell: <span id="modalCell"></span></p>
+          <p>DOB: <span id="modalDob"></span></p>
+          <p>Gender: <span id="modalGender"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+JavaScript Code 
+
+document.addEventListener("DOMContentLoaded", function () {
+  const rowsBox = document.getElementById("rowsBox");
+  const nameOption = document.getElementById("nameOpt");
+  const errBox = document.getElementById("err");
+  const numBox = document.getElementById("numBox");
+
+  document.getElementById("getUsers").addEventListener("click", () => {
+    fetch("modifications.json")
+      .then(res => res.json())
+      .then(data => {
+        const count = parseInt(numBox.value) || 1;
+        let users = [];
+        for (let i = 0; i < count; i++) {
+          users.push(data.results[0]);
+        }
+        showUsers(users);
+      })
+      .catch(() => {
+        errBox.classList.remove("d-none");
+        errBox.textContent = "Failed to load sample data.";
+      });
+  });
+
+  function showUsers(users) {
+    rowsBox.innerHTML = "";
+    users.forEach(user => {
+      const row = document.createElement("div");
+      row.className = "row text-center mb-2";
+      let displayName = nameOption.value === "first" ? user.name.first : user.name.last;
+
+      row.innerHTML = `
+        <div class="col">${displayName}</div>
+        <div class="col">${user.gender}</div>
+        <div class="col">${user.email}</div>
+        <div class="col">${user.location.country}</div>
+      `;
+
+      row.addEventListener("dblclick", () => showUserModal(user));
+      rowsBox.appendChild(row);
+    });
+  }
+
+  function showUserModal(user) {
+    document.getElementById("modalName").textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
+    document.getElementById("modalPicture").src = user.picture.large;
+    document.getElementById("modalAddress").textContent = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}`;
+    document.getElementById("modalEmail").textContent = user.email;
+    document.getElementById("modalPhone").textContent = user.phone;
+    document.getElementById("modalCell").textContent = user.cell;
+    document.getElementById("modalDob").textContent = new Date(user.dob.date).toLocaleDateString();
+    document.getElementById("modalGender").textContent = user.gender;
+
+    const modal = new bootstrap.Modal(document.getElementById("userModal"));
+    modal.show();
+  }
+});
+
+
+
+
+CSS Code 
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+#numBox {
+  margin-right: 8px;
+}
+
+.header-row .col {
+  background-color: lightgray !important;
+  color: black !important;
+  border-radius: 50px !important;
+  padding: 10px !important;
+  margin: 5px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+.header-row select {
+  background-color: lightgray !important;
+  color: black !important;
+  border: none !important;
+  border-radius: 50px !important;
+  text-align: center !important;
+}
+
+#rowsBox .row .col {
+  padding: 6px;
+  margin: 0;
+  background: none;
+  border-radius: 0;
+  color: inherit;
+  word-wrap: break-word;
+}
+
+#getUsers {
+  background-color: lightgray !important;
+  color: black !important;
+  border: none !important;
+  border-radius: 50px !important;
+}
+#getUsers:hover {
+  background-color: darkgray !important;
+}
+
+
+
+
