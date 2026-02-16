@@ -1,0 +1,79 @@
+body {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: olive;
+  background-color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.design-format {
+  border-radius: 50px;
+  border: 2px solid olive;
+  padding: 8px 12px;
+  width: 100%;
+  background-color: beige;
+  color: olive;
+}
+
+#modalImage {
+  display: block;       
+  margin-left: auto;    
+  margin-right: auto;   
+  width: 120px;    
+  height: 120px;
+  object-fit: cover;
+}
+
+.header-pill, .user-pill {
+  /*for equality*/
+  flex: 1;
+  margin: 0 5px;
+  background: beige;
+  width: auto;
+  color: olive;
+  font-weight: bold;
+  border-radius: 50px;
+  padding: 8px 12px;
+  /*for “…”, if long text*/
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-pill {
+  background-color: beige; 
+  font-weight: normal;
+}
+
+#message {
+  color: rgb(128, 2, 2);
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+#loadGif {
+  display: none;
+}
+
+#loadingGifCat {
+  
+  width: 50px;
+  height: auto;
+}
+
+.header-row, .user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.col-email {
+  flex: 2;
+}
